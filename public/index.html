@@ -524,7 +524,7 @@ let currentUser = null;
 const S = {
   xp:0,labsDone:new Set(),quizCorrect:0,quizTotal:0,streak:0,
   badges:new Set(),connectorScores:{},
-  currentConnector:'websearch',
+  currentConnector:'fundamentals',
   labHistory:{},labMsgCounts:{},labStepsDone:{},quizAnswered:new Set(),
   quizMeta:{},
 };
@@ -858,7 +858,7 @@ function enterApp() {
   document.getElementById('ddName').textContent=u?.name||'User';
   document.getElementById('ddEmail').textContent=u?.email||'';
   document.getElementById('avatarBtn').textContent=(u?.name||'U')[0].toUpperCase();
-  loadConnector('websearch');
+  loadConnector('fundamentals');
   updateScorecard();
 }
 
@@ -1123,7 +1123,7 @@ function updateScorecard(){
     if(certTxt)certTxt.textContent='Pending approval from Dr. Ankit Vishnoi';
   } else if(certStatus==='denied'){
     if(certBtn){certBtn.disabled=true;certBtn.textContent='❌ Certificate Denied';}
-    if(certTxt)certTxt.textContent='Contact avishnoi.cse@geu.ac.in';
+    if(certTxt)certTxt.textContent='Contact ankitvishnoi.cse@geu.ac.in';
   } else {
     if(certBtn){certBtn.disabled=labCount<7;certBtn.textContent='🎓 Request Certificate';certBtn.style.borderColor='';certBtn.style.color='';}
     if(certTxt){
