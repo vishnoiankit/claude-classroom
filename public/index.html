@@ -763,9 +763,14 @@ async function sendMsg(id){
   S.labHistory[id].push({role:'user',content:msg});
   S.labMsgCounts[id]=(S.labMsgCounts[id]||0)+1;
   try{
-    const res=await fetch(API.CLAUDE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:c.lab.sys,messages:S.labHistory[id]})});
+    const res=await fetch(API.CLAUDE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:c.lab.sys,messages:S.labHistory[id]})});
     const data=await res.json();
-    if(!res.ok)throw new Error(data.error||'API error '+res.status);
+    if(!res.ok){
+      let errMsg='API error '+res.status;
+      if(data.error){errMsg=typeof data.error==='object'?JSON.stringify(data.error):String(data.error);}
+      else if(data.message){errMsg=String(data.message);}
+      throw new Error(errMsg);
+    }
     const reply=data.content?.map(b=>b.text||'').join('')||'No response received.';
     S.labHistory[id].push({role:'assistant',content:reply});
     document.getElementById(tid)?.remove();
@@ -774,7 +779,11 @@ async function sendMsg(id){
     awardLabXP(id);
   }catch(e){
     document.getElementById(tid)?.remove();
-    const em=e.message.includes('Login required')?'⚠️ Session expired. Please sign in again.':'⚠️ '+e.message;
+    let em=e.message||'Unknown error';
+    if(em.includes('Login required')||em.includes('Session expired'))em='⚠️ Session expired. Please sign in again.';
+    else if(em.includes('ANTHROPIC_API_KEY'))em='⚠️ API key not configured on the server.';
+    else if(em.includes('Rate limit'))em='⚠️ Too many requests. Please wait a moment.';
+    else em='⚠️ '+em;
     if(errBar){errBar.textContent=em;errBar.classList.add('show');}
     chatBox.innerHTML+=`<div class="msg ai"><div class="msg-av">⬡</div><div><div class="bubble" style="color:var(--rose);">${escH(em)}</div></div></div>`;
     chatBox.scrollTop=chatBox.scrollHeight;

@@ -26,7 +26,7 @@ exports.handler = async function (event) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({
-        model: body.model || 'claude-sonnet-4-20250514',
+        model: body.model || 'claude-sonnet-4-5',
         max_tokens: Math.min(body.max_tokens || 1000, 2000),
         system: (body.system || '').slice(0, 4000),
         messages: body.messages.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: String(m.content).slice(0, 8000) })),
