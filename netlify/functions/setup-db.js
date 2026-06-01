@@ -62,7 +62,7 @@ exports.handler = async function(event) {
       const adminInsert = await supabaseQuery('users', 'POST', {
         id: uuidv4(),
         name: 'Dr. Ankit Vishnoi',
-        email: 'avishnoi.cse@geu.ac.in',
+        email: 'ankitvishnoi.cse@geu.ac.in',
         password: hashed,
         role: 'admin',
         status: 'approved',

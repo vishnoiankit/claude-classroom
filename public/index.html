@@ -938,38 +938,58 @@ function renderConnector(id){
 }
 
 function rLearn(c,id){
-  const concepts=c.concepts.map(x=>`<div class="block"><h3>${x.title}</h3>${x.body?`<p>${x.body}</p>`:''
+  const concepts=(c.concepts||[]).map(x=>`<div class="block"><h3>${x.title}</h3>${x.body?`<p>${x.body}</p>`:''
 }${x.items?`<ul>${x.items.map(i=>`<li>${i}</li>`).join('')}</ul>`:''}</div>`).join('');
-  const chips=c.samples.map(q=>`<div class="sq-chip" onclick="sendToLab('${esc(q)}','${id}')">${q}</div>`).join('');
-  return `<div class="block" style="border-color:${c.accent}"><h3 style="color:${c.accent}">🎯 What is this connector?</h3><p>${c.desc}</p></div>
+  const samples=c.samples||[];
+  const chips=samples.length>0?samples.map(q=>`<div class="sq-chip" onclick="sendToLab(\'${esc(q)}\',\'${id}\')">${q}</div>`).join(''):'';
+  const samplesHTML=chips?`<div style="font-family:\'Geist Mono\',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin:14px 0 8px;">Sample queries — click to try in Lab</div><div class="sq-row">${chips}</div>`:'';
+  return `<div class="block" style="border-color:${c.accent};"><h3 style="color:${c.accent};">🎯 What is this module about?</h3><p>${c.desc}</p></div>
 ${concepts}
-<div style="font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin:14px 0 8px;">Sample queries — click to try in Lab</div>
-<div class="sq-row">${chips}</div>
-<div class="callout c-amber"><span class="callout-icon">💡</span><div class="callout-text"><strong>Next:</strong> Head to the <strong>Lab tab</strong> to practice with a live Claude simulation, then test knowledge in the <strong>Quiz tab</strong>.</div></div>`;
+${samplesHTML}
+<div class="callout c-amber"><span class="callout-icon">💡</span><div class="callout-text"><strong>Next step:</strong> Head to the <strong>Lab tab</strong> to practice freely with Claude, then test your knowledge in the <strong>Quiz tab</strong>.</div></div>`;
 }
-
 function rLab(c,id){
   if(!S.labHistory[id])S.labHistory[id]=[];
   if(!S.labMsgCounts[id])S.labMsgCounts[id]=0;
   if(!S.labStepsDone[id])S.labStepsDone[id]=new Set();
-  const steps=c.lab.steps.map((s,i)=>`<div class="mstep ${S.labStepsDone[id].has(i)?'done':''}" id="lstep-${id}-${i}"><span>${S.labStepsDone[id].has(i)?'✓':i+1}</span> ${s}</div>`).join('');
   const msgs=S.labHistory[id].map(m=>m.role==='user'
     ?`<div class="msg user"><div class="msg-av">👤</div><div><div class="bubble">${escH(m.content)}</div><div class="msg-meta">You</div></div></div>`
-    :`<div class="msg ai"><div class="msg-av">⬡</div><div><div class="bubble">${fmt(m.content)}</div><div class="msg-meta">Claude Instructor · ${c.name}</div></div></div>`).join('');
-  const hints=c.lab.hints.map(h=>`<div class="hint-chip" onclick="injectHint('${esc(h)}','${id}')">↳ ${h}</div>`).join('');
-  const done=S.labsDone.has(id);
-  return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;"><span style="font-size:18px">🧪</span><div><div style="font-family:'Geist Mono',monospace;font-size:12px;font-weight:700;color:var(--teal);">INTERACTIVE LAB — ${c.name.toUpperCase()}</div><div style="font-size:11px;color:var(--t2);">Practice with a live Claude simulation powered by the real API</div></div></div>
-<div class="lab-mission"><div class="mission-title">🎯 Mission</div><p style="font-size:13px;color:var(--t2);">${c.lab.mission}</p><div class="mission-steps">${steps}</div></div>
-<div class="err-bar" id="err-${id}"></div>
-<div class="chat-box" id="chatBox-${id}">
-<div class="msg ai"><div class="msg-av">⬡</div><div><div class="bubble">Welcome to the <strong>${c.name}</strong> lab! I'm your Claude-powered instructor. Try a hint below or write your own query. Complete all 3 mission steps to earn XP! 🚀</div><div class="msg-meta">Claude Instructor</div></div></div>
-${msgs}</div>
-<div class="send-row"><input class="input-bar" id="labInput-${id}" placeholder="Type your query or click a hint…" onkeydown="if(event.key==='Enter')sendMsg('${id}')"/><button class="send-btn" id="sendBtn-${id}" onclick="sendMsg('${id}')">▶ Send</button></div>
-<div class="hint-row" style="margin-bottom:12px;">${hints}</div>
-<div class="callout c-teal"><span class="callout-icon">📊</span><div class="callout-text"><strong>Scoring:</strong> ${c.lab.score} Each step: <strong>+15 XP</strong>. Full lab bonus: <strong>+25 XP</strong>.</div></div>
-<div class="complete-banner ${done?'show':''}" id="labComplete-${id}"><h4>✅ Lab Complete!</h4><p style="font-size:12px;color:var(--t2);">Great work! Now test your knowledge.</p><button class="next-tab-btn" onclick="switchTab('quiz','${id}')">Take the Quiz →</button></div>`;
+    :`<div class="msg ai"><div class="msg-av">⬡</div><div><div class="bubble">${fmt(m.content)}</div><div class="msg-meta">Claude · ${c.name}</div></div></div>`).join('');
+  const labDone=S.labsDone.has(id);
+  const sys=c.sys||c.lab?.sys||'You are a helpful Claude assistant for B.Tech CSE students. Answer any question they have about this topic with full depth and accuracy.';
+  return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <span style="font-size:20px">🧪</span>
+    <div><div style="font-family:\'Geist Mono\',monospace;font-size:12px;font-weight:700;color:var(--teal);">OPEN PRACTICE LAB — ${c.name.toUpperCase()}</div>
+    <div style="font-size:11px;color:var(--t2);">Ask Claude anything about this module. No restrictions — practice freely.</div></div>
+  </div>
+  <div class="lab-mission">
+    <div class="mission-title">🎯 How to use this lab</div>
+    <p style="font-size:13px;color:var(--t2);">This is an open lab powered by real AI. Ask Claude to explain concepts, debug your code, review your work, solve problems, or answer any question related to <strong>${c.name}</strong>. The more you engage, the more you learn.</p>
+    <div class="mission-steps" style="margin-top:10px;">
+      <div class="mstep ${S.labStepsDone[id]?.has(0)?'done':''}" id="lstep-${id}-0"><span>${S.labStepsDone[id]?.has(0)?'✓':'1'}</span> Ask your first question</div>
+      <div class="mstep ${S.labStepsDone[id]?.has(1)?'done':''}" id="lstep-${id}-1"><span>${S.labStepsDone[id]?.has(1)?'✓':'2'}</span> Go deeper with a follow-up</div>
+      <div class="mstep ${S.labStepsDone[id]?.has(2)?'done':''}" id="lstep-${id}-2"><span>${S.labStepsDone[id]?.has(2)?'✓':'3'}</span> Apply it to your own work</div>
+    </div>
+  </div>
+  <div class="err-bar" id="err-${id}"></div>
+  <div class="chat-box" id="chatBox-${id}">
+    <div class="msg ai"><div class="msg-av">⬡</div><div>
+      <div class="bubble">Welcome to the <strong>${c.name}</strong> lab! I am your Claude-powered instructor. Ask me anything about this module — theory, code, problems, concepts, or your own work. Let us go deep. 🚀</div>
+      <div class="msg-meta">Claude Instructor</div>
+    </div></div>
+    ${msgs}
+  </div>
+  <div class="send-row"><input class="input-bar" id="labInput-${id}" placeholder="Ask Claude anything about ${c.name}…" onkeydown="if(event.key===\'Enter\')sendMsg(\'${id}\')"/><button class="send-btn" id="sendBtn-${id}" onclick="sendMsg(\'${id}\')">▶ Send</button></div>
+  <div class="callout c-teal" style="margin-top:12px;">
+    <span class="callout-icon">📊</span>
+    <div class="callout-text"><strong>XP:</strong> Each message earns step XP (+15). 3 messages = lab complete (+25 bonus XP).</div>
+  </div>
+  <div class="complete-banner ${labDone?'show':''}" id="labComplete-${id}">
+    <h4>✅ Lab Session Complete!</h4>
+    <p style="font-size:12px;color:var(--t2);">Great practice! Now test your knowledge.</p>
+    <button class="next-tab-btn" onclick="switchTab(\'quiz\',\'${id}\')">Take the Quiz →</button>
+  </div>`;
 }
-
 function rQuiz(c,id){
   return `<div style="margin-bottom:18px;"><div style="font-family:'Geist Mono',monospace;font-size:12px;font-weight:700;color:var(--teal);margin-bottom:3px;">🧠 KNOWLEDGE CHECK — ${c.name.toUpperCase()}</div><div style="font-size:12px;color:var(--t2);">Correct answer = +20 XP</div></div>
 ${c.quiz.map((q,qi)=>{
@@ -1002,7 +1022,7 @@ async function sendMsg(id){
   S.labHistory[id].push({role:'user',content:msg});
   S.labMsgCounts[id]=(S.labMsgCounts[id]||0)+1;
   try{
-    const res=await fetch(API.CLAUDE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:c.lab.sys,messages:S.labHistory[id]})});
+    const res=await fetch(API.CLAUDE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,system:c.sys||c.lab?.sys||'You are a helpful Claude AI assistant for B.Tech CSE students.',messages:S.labHistory[id]})});
     const data=await res.json();
     if(!res.ok){
       let errMsg='API error '+res.status;

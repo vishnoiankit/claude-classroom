@@ -13,7 +13,7 @@ const { db } = require('./_db');
 
 const SITE_URL = process.env.SITE_URL || 'http://localhost:8888';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@claudelab.dev';
-const ADMIN_EMAIL = 'avishnoi.cse@geu.ac.in';
+const ADMIN_EMAIL = 'ankitvishnoi.cse@geu.ac.in';
 
 function getMailer() {
   if (process.env.SMTP_HOST) {
@@ -332,7 +332,7 @@ exports.handler = async function(event, context) {
 
     if (!user || !match) return respond(401, { error: 'Invalid email or password' });
     if (user.status === 'pending') return respond(403, { error: 'Your registration is pending approval from Dr. Ankit Vishnoi. You will receive an email once approved.' });
-    if (user.status === 'rejected') return respond(403, { error: 'Your registration was not approved. Please contact avishnoi.cse@geu.ac.in for assistance.' });
+    if (user.status === 'rejected') return respond(403, { error: 'Your registration was not approved. Please contact ankitvishnoi.cse@geu.ac.in for assistance.' });
     if (!user.verified) return respond(403, { error: 'Please verify your email first. Check your inbox for the verification link.' });
 
     // Get progress
