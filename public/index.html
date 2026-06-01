@@ -1055,12 +1055,13 @@ function awardLabXP(id){
   const count=S.labMsgCounts[id]||0;
   if(!S.labStepsDone[id])S.labStepsDone[id]=new Set();
   const done=S.labStepsDone[id];
-  const stepIdx=Math.min(count-1,c.lab.steps.length-1);
+  const totalSteps=3; // all modules have 3 steps
+  const stepIdx=Math.min(count-1,totalSteps-1);
   if(!done.has(stepIdx)){
     done.add(stepIdx); addXP(15); S.streak++;
     const pill=document.getElementById(`lstep-${id}-${stepIdx}`);
-    if(pill){pill.classList.add('done');pill.querySelector('span').textContent='✓';}
-    if(done.size>=c.lab.steps.length&&!S.labsDone.has(id)){
+    if(pill){pill.classList.add('done');const sp=pill.querySelector('span');if(sp)sp.textContent='✓';}
+    if(done.size>=totalSteps&&!S.labsDone.has(id)){
       S.labsDone.add(id); addXP(25);
       earnBadge('badge-first');
       if(S.labsDone.size>=3)earnBadge('badge-builder');
@@ -1073,7 +1074,6 @@ function awardLabXP(id){
   }
   updateScorecard();
 }
-
 function injectHint(h,id){const el=document.getElementById(`labInput-${id}`);if(el){el.value=h;el.focus();}}
 function sendToLab(q,id){switchTab('lab',id);setTimeout(()=>{const el=document.getElementById(`labInput-${id}`);if(el){el.value=q;el.focus();}},150);}
 
