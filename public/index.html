@@ -306,18 +306,35 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="auth-sub">Join the classroom. It's free — no credit card needed.</div>
       <div class="auth-alert" id="regAlert"></div>
       <div class="field-row">
-        <div class="field"><label>Full name</label><input type="text" id="regName" placeholder="Jane Smith" autocomplete="name"/></div>
-        <div class="field"><label>Role / Title</label><input type="text" id="regRole" placeholder="Developer"/></div>
+        <div class="field"><label>Full Name *</label><input type="text" id="regName" placeholder="e.g. Rahul Sharma" autocomplete="name"/></div>
+        <div class="field"><label>Email ID *</label><input type="email" id="regEmail" placeholder="student@university.edu" autocomplete="email"/></div>
       </div>
-      <div class="field"><label>Company (optional)</label><input type="text" id="regCompany" placeholder="Acme Corp"/></div>
-      <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email"/></div>
-      <div class="field"><label>Password</label>
+      <div class="field-row">
+        <div class="field"><label>Course *</label><input type="text" id="regCourse" placeholder="e.g. B.Tech, M.Tech, BCA"/></div>
+        <div class="field"><label>Branch *</label><input type="text" id="regBranch" placeholder="e.g. CSE, IT, ECE"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Department *</label><input type="text" id="regDept" placeholder="e.g. Computer Science"/></div>
+        <div class="field"><label>Section</label><input type="text" id="regSection" placeholder="e.g. A, B, C"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Semester *</label><input type="text" id="regSem" placeholder="e.g. 4th, 6th"/></div>
+        <div class="field"><label>Enrollment No. *</label><input type="text" id="regEnroll" placeholder="Your enrollment number"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Roll No. *</label><input type="text" id="regRoll" placeholder="Your roll number"/></div>
+        <div class="field"><label>College / University *</label><input type="text" id="regCollege" placeholder="e.g. Graphic Era University"/></div>
+      </div>
+      <div class="field"><label>Password *</label>
         <div class="pw-wrap"><input type="password" id="regPw" placeholder="Min 8 chars, upper, lower, number" oninput="checkStrength(this.value)" autocomplete="new-password"/>
         <button class="pw-toggle" onclick="togglePw('regPw',this)">👁</button></div>
         <div class="pw-strength"><div class="pw-strength-fill" id="pwFill"></div></div>
         <div class="pw-hint" id="pwHint">Enter a password</div>
       </div>
-      <button class="btn-primary" onclick="doRegister()" id="regBtn">Create Account</button>
+      <div style="background:rgba(0,229,212,0.05);border:1px solid rgba(0,229,212,0.15);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--t2);">
+        📋 Your registration will be reviewed by <strong style="color:var(--t1);">Dr. Ankit Vishnoi</strong>. You will receive an email once approved.
+      </div>
+      <button class="btn-primary" onclick="doRegister()" id="regBtn">Submit Registration</button>
       <div class="auth-switch">Already have an account? <button class="auth-link" onclick="showPanel('panelLogin')">Sign in</button></div>
     </div>
 
@@ -344,13 +361,33 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <button class="btn-primary" onclick="doReset()" id="resetBtn">Set Password</button>
     </div>
 
+    <!-- EMAIL VERIFY + SET PASSWORD (for newly approved students) -->
+    <div class="auth-panel" id="panelSetPassword">
+      <div class="auth-title">Welcome! Set your password</div>
+      <div class="auth-sub">Your account has been approved. Set a password to complete your registration.</div>
+      <div class="auth-alert" id="setPwAlert"></div>
+      <div class="field"><label>New Password *</label>
+        <div class="pw-wrap"><input type="password" id="setPw" placeholder="Min 8 chars, upper, lower, number" oninput="checkStrength2(this.value)" autocomplete="new-password"/>
+        <button class="pw-toggle" onclick="togglePw('setPw',this)">👁</button></div>
+        <div class="pw-strength"><div class="pw-strength-fill" id="pwFill2"></div></div>
+      </div>
+      <button class="btn-primary" onclick="doVerifyWithPassword()" id="setPwBtn">Activate Account</button>
+    </div>
+
     <!-- VERIFY PENDING -->
     <div class="auth-panel" id="panelVerifyPending">
       <div style="text-align:center;padding:16px 0;">
-        <div style="font-size:3rem;margin-bottom:16px;">📧</div>
-        <div class="auth-title">Check your inbox</div>
-        <div class="auth-sub">We sent a verification link to your email. Click it to activate your account and start learning.</div>
+        <div style="font-size:3rem;margin-bottom:16px;">⏳</div>
+        <div class="auth-title">Registration Submitted</div>
+        <div class="auth-sub">Your registration has been sent to <strong>Dr. Ankit Vishnoi</strong> for review. Once approved, you will receive a verification email to activate your account.</div>
         <div class="auth-alert" id="verifyAlert"></div>
+        <div style="background:rgba(0,229,212,0.05);border:1px solid rgba(0,229,212,0.15);border-radius:8px;padding:12px 14px;margin:16px 0;font-size:12px;color:var(--t2);text-align:left;">
+          <strong style="color:var(--t1);">What happens next:</strong><br/>
+          1. Dr. Vishnoi receives your details by email<br/>
+          2. Upon approval, you receive a verification email<br/>
+          3. Click the link to verify and set your password<br/>
+          4. Start learning!
+        </div>
         <div style="margin-top:20px;"><button class="auth-link" onclick="showPanel('panelLogin')">Back to sign in</button></div>
       </div>
     </div>
@@ -383,17 +420,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   <div class="app-body">
     <aside class="sidebar">
-      <div class="sl">Built-in</div>
-      <button class="cb active" onclick="loadConnector('websearch')" id="btn-websearch"><div class="cb-i" style="background:rgba(0,229,212,0.1)">🔍</div><div><span class="cb-n">Web Search</span><span class="cb-t">live · built-in</span></div><div class="cb-done">✓</div></button>
-      <button class="cb" onclick="loadConnector('calendar')" id="btn-calendar"><div class="cb-i" style="background:rgba(91,138,245,0.1)">📅</div><div><span class="cb-n">Calendar</span><span class="cb-t">events · built-in</span></div><div class="cb-done">✓</div></button>
-      <button class="cb" onclick="loadConnector('reminders')" id="btn-reminders"><div class="cb-i" style="background:rgba(61,214,140,0.1)">📝</div><div><span class="cb-n">Reminders</span><span class="cb-t">todos · built-in</span></div><div class="cb-done">✓</div></button>
-      <button class="cb" onclick="loadConnector('maps')" id="btn-maps"><div class="cb-i" style="background:rgba(245,168,58,0.1)">📍</div><div><span class="cb-n">Maps & Places</span><span class="cb-t">location · built-in</span></div><div class="cb-done">✓</div></button>
-      <button class="cb" onclick="loadConnector('coderun')" id="btn-coderun"><div class="cb-i" style="background:rgba(240,96,122,0.1)">💻</div><div><span class="cb-n">Code Execution</span><span class="cb-t">run · built-in</span></div><div class="cb-done">✓</div></button>
-      <div class="sl">Third-party MCP</div>
-      <button class="cb" onclick="loadConnector('gmail')" id="btn-gmail"><div class="cb-i" style="background:rgba(240,96,122,0.1)">✉️</div><div><span class="cb-n">Gmail</span><span class="cb-t">email · mcp</span></div><div class="cb-done">✓</div></button>
-      <button class="cb" onclick="loadConnector('gdrive')" id="btn-gdrive"><div class="cb-i" style="background:rgba(91,138,245,0.1)">📂</div><div><span class="cb-n">Google Drive</span><span class="cb-t">files · mcp</span></div><div class="cb-done">✓</div></button>
-      <button class="cb" onclick="loadConnector('github')" id="btn-github"><div class="cb-i" style="background:rgba(167,139,250,0.1)">🐙</div><div><span class="cb-n">GitHub</span><span class="cb-t">code · mcp</span></div><div class="cb-done">✓</div></button>
-      <button class="cb" onclick="loadConnector('slack')" id="btn-slack"><div class="cb-i" style="background:rgba(61,214,140,0.1)">💬</div><div><span class="cb-n">Slack</span><span class="cb-t">chat · mcp</span></div><div class="cb-done">✓</div></button>
+      <div class="sl">Foundations</div>
+      <button class="cb active" onclick="loadConnector('fundamentals')" id="btn-fundamentals"><div class="cb-i" style="background:rgba(0,229,212,0.1)">⬡</div><div><span class="cb-n">Claude Fundamentals</span><span class="cb-t">start here</span></div><div class="cb-done">✓</div></button>
+      <button class="cb" onclick="loadConnector('coding')" id="btn-coding"><div class="cb-i" style="background:rgba(91,138,245,0.1)">💻</div><div><span class="cb-n">Claude for Coding</span><span class="cb-t">build & debug</span></div><div class="cb-done">✓</div></button>
+      <button class="cb" onclick="loadConnector('dsa')" id="btn-dsa"><div class="cb-i" style="background:rgba(167,139,250,0.1)">🧩</div><div><span class="cb-n">DSA & Problem Solving</span><span class="cb-t">algorithms</span></div><div class="cb-done">✓</div></button>
+      <div class="sl">Academic</div>
+      <button class="cb" onclick="loadConnector('writing')" id="btn-writing"><div class="cb-i" style="background:rgba(245,168,58,0.1)">📝</div><div><span class="cb-n">Academic Writing</span><span class="cb-t">papers & research</span></div><div class="cb-done">✓</div></button>
+      <button class="cb" onclick="loadConnector('sysdesign')" id="btn-sysdesign"><div class="cb-i" style="background:rgba(61,214,140,0.1)">🏗️</div><div><span class="cb-n">System Design</span><span class="cb-t">architecture</span></div><div class="cb-done">✓</div></button>
+      <button class="cb" onclick="loadConnector('cyber')" id="btn-cyber"><div class="cb-i" style="background:rgba(240,96,122,0.1)">🔐</div><div><span class="cb-n">Cybersecurity</span><span class="cb-t">security & CTF</span></div><div class="cb-done">✓</div></button>
+      <div class="sl">Advanced</div>
+      <button class="cb" onclick="loadConnector('aiml')" id="btn-aiml"><div class="cb-i" style="background:rgba(56,189,248,0.1)">🤖</div><div><span class="cb-n">AI, ML, DL, RAG & LLM</span><span class="cb-t">intelligence</span></div><div class="cb-done">✓</div></button>
+      <button class="cb" onclick="loadConnector('connectors')" id="btn-connectors"><div class="cb-i" style="background:rgba(0,229,212,0.1)">🔌</div><div><span class="cb-n">Claude Connectors</span><span class="cb-t">tools & APIs</span></div><div class="cb-done">✓</div></button>
+      <button class="cb" onclick="loadConnector('projects')" id="btn-projects"><div class="cb-i" style="background:rgba(245,168,58,0.1)">🚀</div><div><span class="cb-n">Projects & Final Year</span><span class="cb-t">capstone</span></div><div class="cb-done">✓</div></button>
+      <button class="cb" onclick="loadConnector('career')" id="btn-career"><div class="cb-i" style="background:rgba(61,214,140,0.1)">🎯</div><div><span class="cb-n">Career Preparation</span><span class="cb-t">jobs & interviews</span></div><div class="cb-done">✓</div></button>
     </aside>
     <main class="classroom" id="classroomMain"></main>
     <aside class="scorecard">
@@ -421,8 +460,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
       <div class="cert-section">
-        <button class="cert-btn" id="certBtn" onclick="openCert()" disabled>🎓 Download Certificate</button>
-        <div class="cert-progress-txt" id="certTxt">Complete 5+ labs to unlock</div>
+        <div id="certStatusDiv"></div>
+        <button class="cert-btn" id="certBtn" onclick="handleCertAction()" disabled>🎓 Request Certificate</button>
+        <div class="cert-progress-txt" id="certTxt">Complete 7+ modules to unlock</div>
       </div>
     </aside>
   </div>
@@ -493,15 +533,197 @@ const S = {
 // CONNECTOR DATA
 // ════════════════════════════════════════════════════════════
 const CONN={
-  websearch:{name:'Web Search',icon:'🔍',color:'rgba(0,229,212,0.1)',accent:'var(--teal)',type:'built-in',tagline:'Give Claude eyes on the live internet',desc:'The Web Search connector lets Claude query the real-time web inside a conversation — fetching current news, prices, research, and facts beyond its training data cutoff.',concepts:[{title:'📡 How it works',body:"When you mention something time-sensitive, Claude automatically searches. Trigger explicitly with 'search for...' or 'what's the latest on...'"},{title:'🗂️ What it fetches',items:['Breaking news & current events','Stock prices, weather, sports scores','Recent research & articles','Full webpage content via URL','Real-time product info']},{title:"⚡ Searches vs. doesn't",body:"Searches: current events, roles, recent releases. Doesn't search: stable facts (boiling point of water), well-known history."}],samples:["What's the latest AI news today?","Who is the current CEO of OpenAI?","What is the EUR/USD rate right now?","Summarise recent quantum computing news","Top tech stories this week?"],lab:{mission:'Research a real topic using web search, then ask a follow-up. Practice triggering searches and building on results.',steps:['Ask about a current event','Ask a follow-up question','Request a summary or comparison'],hints:["What's in the news about AI?","Who won the most recent Champions League final?","What is Bitcoin's price today?","Latest developments in climate science?"],sys:`You are a Web Search instructor in a live classroom. When the student asks about current events, news, prices, or anything time-sensitive, simulate using web_search. Show realistic search results in a structured format. After each result, explain what you searched and why. Build on follow-ups. Teach how web search works in Claude. Under 200 words, educational tone.`,score:'Did you trigger 2+ searches and ask a follow-up?'},quiz:[{q:'When does Claude automatically trigger a web search?',opts:['Always, for every message','When asked about time-sensitive or current information','Only when you type "search:"','Never — you must click a button'],ans:1,exp:'Claude searches when it detects current info is needed — news, prices, or who holds a role today.'},{q:'Which query would NOT trigger a web search?',opts:['Who is the current UK Prime Minister?','What is the boiling point of water?','What happened in the news today?',"What is Tesla's stock price?"],ans:1,exp:'The boiling point of water is stable scientific fact — Claude knows this without searching.'}]},
-  calendar:{name:'Calendar',icon:'📅',color:'rgba(91,138,245,0.1)',accent:'var(--blue)',type:'built-in',tagline:'Let Claude manage your time intelligently',desc:'The Calendar connector gives Claude the ability to read, search, and create calendar events in natural language.',concepts:[{title:'🔧 What Claude can do',items:['Search upcoming events by date or type','Create events with all details','Update or reschedule events','Check your availability','Delete events on request']},{title:'🗣️ Natural language',body:"Say 'Schedule a team standup every Monday at 9am' — Claude understands 'next week', 'this afternoon', 'end of month'."},{title:'⚠️ Privacy',body:'Claude only reads/writes what you ask it to, and never shares your calendar data externally.'}],samples:["What's on my calendar tomorrow?","Schedule a dentist appointment next Tuesday at 2pm","Do I have meetings this Friday?","Create a weekly standup every Monday 9am","Move my 3pm meeting to 4pm"],lab:{mission:'Practice scheduling: create events, check schedule, ask about availability.',steps:["Check what's on your calendar","Create a new event","Ask a scheduling question"],hints:["What's on my calendar this week?","Schedule a project review Friday at 3pm","Add: call John tomorrow noon","Do I have free time Thursday afternoon?"],sys:`You are a Calendar connector instructor. Simulate a real calendar. When asked about calendar, invent realistic events (Team Standup 9am, Product Review Fri 2pm, Lunch with Sarah Tue 12:30pm). When asked to create, confirm with full details. Explain the connector at each step. Under 200 words.`,score:'Did you check calendar AND create/modify an event?'},quiz:[{q:'Which phrase best demonstrates natural language scheduling?',opts:['{"title":"Meeting","start":"2024-01-15T14:00:00"}','Add meeting next Tuesday at 2pm with the product team','calendar.create()','Open my calendar app'],ans:1,exp:'Calendar connector understands plain English — no JSON or code needed.'},{q:'The Calendar connector can...',opts:['Only read events','Read, create, update and delete events','Only work with Google Calendar','Only schedule one event at a time'],ans:1,exp:'Full CRUD capability — search, create, update, delete.'}]},
-  reminders:{name:'Reminders',icon:'📝',color:'rgba(61,214,140,0.1)',accent:'var(--green)',type:'built-in',tagline:'Never forget anything with AI-powered todos',desc:'The Reminders connector lets Claude create, manage, and organise your todo lists. Perfect for capturing action items, grocery lists, project tasks, and time-based alerts.',concepts:[{title:'📋 What Claude can do',items:['Create reminders with due dates','Build grocery or shopping lists','Organise into named lists','Mark reminders complete','Search existing reminders']},{title:'🛒 Great for lists',body:"Say 'Add milk, eggs, bread to my grocery list' — Claude creates 3 separate reminders, easy to tick off one by one."},{title:'⏰ Time-based alerts',body:"Add 'remind me at 5pm' or 'due next Friday' to get timed alerts — Claude handles the scheduling automatically."}],samples:["Remind me to call the dentist tomorrow at 10am","Add milk, eggs, butter to my grocery list","What are my pending reminders?","Create a reading list with three books","Mark my gym reminder as done"],lab:{mission:'Build and manage reminders. Create a list, add items, practice retrieval.',steps:['Create a reminder','Build a multi-item list','Retrieve or manage reminders'],hints:["Remind me to review the report by Friday","Add tomatoes, pasta, olive oil to my shopping list","What's on my to-do list?","Create a project checklist: design, develop, test, deploy"],sys:`You are a Reminders connector instructor. Simulate the Reminders system. Confirm each reminder enthusiastically and describe how it would appear on device. When listing, show 3-5 realistic pending items. Teach best practices: one reminder per shopping item, time-based alarms. Under 150 words.`,score:'Did you create a multi-item list AND a time-based reminder?'},quiz:[{q:'When creating a shopping list, what is best practice?',opts:['Put all items in one reminder','Create one separate reminder per item','Use a note app instead','Create a calendar event for shopping'],ans:1,exp:'One reminder per item lets you tick them off individually as you shop.'},{q:'Which command creates a time-based reminder?',opts:['"Remind me about the meeting"','"Note: meeting"','"Remind me about the meeting tomorrow at 3pm"','"Add meeting to calendar"'],ans:2,exp:'Adding a specific time triggers a timed alert on your device.'}]},
-  maps:{name:'Maps & Places',icon:'📍',color:'rgba(245,168,58,0.1)',accent:'var(--amber)',type:'built-in',tagline:'Location intelligence, right in conversation',desc:'The Maps & Places connector lets Claude find nearby places, show interactive maps, plan itineraries, and display routes.',concepts:[{title:'🗺️ What Claude can do',items:['Find restaurants, cafes, shops near you','Display interactive maps with pins','Plan multi-stop itineraries','Show hours, ratings, addresses','Get your approximate or precise location']},{title:'🎯 Location-aware',body:"Ask 'coffee shops near me' and Claude gets your location, searches Google Places, and renders an interactive map. Specify any city: 'best sushi in Tokyo.'"},{title:'🗓️ Itinerary mode',body:"Ask Claude to plan a day trip and it lays out stops on a map with timing, arrival suggestions, and insider tips."}],samples:["Find the best coffee shops near me","Show Italian restaurants in Paris on a map","Plan a one-day itinerary in Barcelona","Top-rated attractions near Times Square","Find a pharmacy open now near me"],lab:{mission:'Find places and plan a route. Practice location queries, map display, and itinerary building.',steps:['Search for nearby places','Ask for a map or directions','Plan a mini itinerary'],hints:["Find coffee shops near the Eiffel Tower","Show 3 highly rated restaurants in New York","Plan a morning walk in London","Best museums in Amsterdam?"],sys:`You are a Maps & Places connector instructor. When asked about places, simulate finding real-sounding locations (invent realistic names, addresses, ratings). Describe how a map appears with pins. For itineraries, create a structured 3-4 stop plan with timing and tips. Explain how the connector uses Google Places and user location. Under 200 words.`,score:'Did you find places AND request an itinerary or route?'},quiz:[{q:'To find places near your location, Claude needs...',opts:['Your full address typed','Location permission — precise or approximate','A Google Maps account','You to open Maps app'],ans:1,exp:'The location tool has "precise" (nearby) and "approximate" (city context) modes.'},{q:'Which query triggers itinerary mode?',opts:['"Where is the Louvre?"','"Show Paris on a map"','"Plan a full day in Rome with stops and timing"','"Population of Tokyo?"'],ans:2,exp:'Itinerary mode is triggered by requests to plan a trip with multiple stops.'}]},
-  coderun:{name:'Code Execution',icon:'💻',color:'rgba(240,96,122,0.1)',accent:'var(--rose)',type:'built-in',tagline:'Run real code, process data, create files',desc:'The Code Execution connector gives Claude a Linux sandbox to run Python scripts, process files, create charts, and generate documents — all inside your chat.',concepts:[{title:'⚙️ What Claude can run',items:['Python scripts for data analysis','CSV, Excel, PDF file processing','Chart and visualisation generation','Mathematical computations','File creation — Word, PDF, Excel']},{title:'📂 Working with files',body:"Upload a CSV and ask 'analyse this data and create a revenue chart.' Claude reads the file, runs Python, and returns results with downloadable output."},{title:'🔒 Safety sandbox',body:'Code runs in an isolated container with no internet access, resets between sessions. Safe for sensitive data.'}],samples:["Calculate compound interest: $10k at 5% for 10 years","Create a bar chart: Q1=120, Q2=145, Q3=133, Q4=178","Python script to clean CSV duplicates","Generate a Word document with project summary","Analyse dataset, find top 5 patterns"],lab:{mission:'Ask Claude to run calculations, generate a chart, or create a file.',steps:['Request a calculation','Ask for a chart or visualisation','Request a file or script'],hints:["ROI: $5000 at 7% for 20 years","Pie chart: Sales 40%, Marketing 25%, Ops 20%, HR 15%","Python to reverse a string and count vowels","Generate a simple invoice as Word doc"],sys:`You are a Code Execution connector instructor. When asked to run code, simulate Python and show the result clearly in a code block with realistic output. For charts, describe vividly and show sample data. For files, describe contents and mention the download link. Teach when to use Code Execution vs. just asking. Explain the sandbox. Under 200 words, technical but friendly.`,score:'Did you run a calculation AND request a visualisation or file?'},quiz:[{q:'The Code Execution sandbox is safe because...',opts:['It uses encryption','Isolated container with no internet access','Requires 2FA','Anthropic reviews all code'],ans:1,exp:'Isolated — no internet, resets between sessions, data stays contained.'},{q:'Which task is BEST for Code Execution?',opts:['Explain compound interest','15% of 240?','Analyse 50,000 rows of sales data and find anomalies','Summarise this paragraph'],ans:2,exp:'Large-scale data analysis on real files requires running actual code.'}]},
-  gmail:{name:'Gmail',icon:'✉️',color:'rgba(240,96,122,0.1)',accent:'var(--rose)',type:'third-party',tagline:'Triage, draft, and send — without leaving Claude',desc:'The Gmail MCP connector lets Claude read your inbox, draft replies, send emails, search threads, and manage labels through natural conversation.',concepts:[{title:'🔌 How to connect',body:'In claude.ai, click the connectors icon → Search "Gmail" → Connect → Sign in with Google. Claude only accesses what you permit in the OAuth scope.'},{title:'📬 What Claude can do',items:['Summarise unread emails by priority','Draft and send replies','Search by sender, subject, date','Label and organise threads','Compose follow-ups and outreach']},{title:'🔐 Privacy & OAuth',body:"Gmail uses OAuth — Claude never sees your password. Grant specific scopes (read/send). Revoke anytime from Google settings."}],samples:["Summarise my unread emails from today","Draft a reply to John's email about the deadline","Search for all emails from Sarah this month","Write a follow-up to my client from last week","What are my most urgent emails?"],lab:{mission:'Practice email triage and drafting. Simulate reading, prioritising, and responding.',steps:['Ask Claude to triage inbox','Draft a reply','Search for an email thread'],hints:["Summarise my last 5 unread emails","Draft a polite follow-up to someone who hasn't replied in 3 days","Find all emails from my manager this week","Write a professional response declining a meeting"],sys:`You are a Gmail connector instructor. Simulate a real inbox. When asked to triage, invent 4-5 realistic work emails (colleagues, clients, newsletters) with urgency levels. When asked to draft, write a polished email. When asked to search, simulate 2-3 matching threads. Explain OAuth, scopes, privacy. Teach best practices: triage first, then draft. Under 200 words.`,score:'Did you triage your inbox AND draft a reply?'},quiz:[{q:'How does Claude access Gmail securely?',opts:['You share your password','Via OAuth — limited token, never your password','Gmail auto-sends copies','You export emails as CSV'],ans:1,exp:'OAuth grants a scoped token. You never share your password, revoke anytime.'},{q:'Best first step when using Gmail with Claude?',opts:['Send an email immediately','Delete spam','Summarise and prioritise your inbox','Give Claude your credentials'],ans:2,exp:'Starting with triage gives a clear picture before taking action.'}]},
-  gdrive:{name:'Google Drive',icon:'📂',color:'rgba(91,138,245,0.1)',accent:'var(--blue)',type:'third-party',tagline:"Your documents, intelligently at Claude's fingertips",desc:'The Google Drive MCP connector lets Claude search, read, summarise, and analyse your Drive files — Docs, Sheets, Slides, and PDFs.',concepts:[{title:'📄 Supported files',items:['Google Docs — read & summarise','Sheets — read data & analyse','Slides — extract content','PDFs and uploaded files','Shared drives and folders']},{title:'🔍 Smart search',body:"Say 'find my Q3 sales report' — Claude searches across Drive using natural language, reads the content, and brings key info into chat."},{title:'⚡ Combine connectors',body:"Drive + Code Execution: 'Find my sales CSV and create a revenue chart.' Drive + Gmail: 'Find the contract and draft an email summary.'"}],samples:["Find my latest project proposal in Drive","Summarise the Q3 report from my Drive","What does the legal contract say about payment terms?","Find all spreadsheets edited this month","Read my meeting notes and extract action items"],lab:{mission:'Practice searching Drive and extracting insights. Try multi-tool combos.',steps:['Search for a file','Summarise a document','Extract specific information'],hints:["Find my project roadmap document","Summarise the key points from my strategy doc","Extract all action items from meeting notes","Find the sales report — top 3 insights?"],sys:`You are a Google Drive connector instructor. Simulate Drive. When asked to find files, invent 2-3 realistic matches (e.g. "Q3 Sales Report - Final.gdoc", "Project Roadmap v2.gdoc"). When asked to summarise, create a realistic 100-word summary. For action items, list 4-5 realistic tasks. Teach natural language search, file types, combining connectors. Under 200 words.`,score:'Did you search for a file AND extract specific content?'},quiz:[{q:"How do you find a file when you don't know its exact name?",opts:["You can't — exact name required","Browse Drive manually then paste link","Ask Claude: 'find my Q3 sales report'","Search Google and hope it appears"],ans:2,exp:'Drive connector supports natural language search — describe it and Claude finds it.'},{q:'Best connector combo for contract analysis?',opts:['Drive only','Drive + Gmail + Code Execution','Web Search only','Calendar + Reminders'],ans:1,exp:'Drive reads it, Gmail sends summary, Code Execution extracts structured data — a powerful trio.'}]},
-  github:{name:'GitHub',icon:'🐙',color:'rgba(167,139,250,0.1)',accent:'var(--purple)',type:'third-party',tagline:'Code review, PRs, and issues — with AI context',desc:'The GitHub MCP connector lets Claude access your repositories, review pull requests, analyse issues, and manage development workflow — all in natural language.',concepts:[{title:'💻 What Claude can do',items:['List and review open pull requests','Read and comment on issues','Analyse code diffs and suggest improvements','Search across repositories','Summarise recent commits']},{title:'🔍 Code review superpower',body:"Ask 'Review my open PRs and flag security risks' — Claude reads the diff, understands context, and gives actionable line-level feedback without leaving chat."},{title:'🛠️ Daily workflow',body:"'What issues are assigned to me?', 'Summarise last 10 commits on main', 'Draft a PR description for my current branch.'"}],samples:["List my open pull requests and status","Review PR #42 and flag any issues","What bugs are open in my repo?","Summarise last 5 commits on main","Draft a PR description for a login feature"],lab:{mission:'Simulate GitHub workflows: PR review, issue triage, and commit summarisation.',steps:['List open PRs or issues','Review code or a PR','Summarise commits or draft a PR'],hints:["List my open pull requests","Review PR #12 for security issues","What open bugs do I have in the backend repo?","Summarise the last 3 commits on main"],sys:`You are a GitHub connector instructor. Simulate a GitHub environment. For PRs, invent 3 realistic ones (feat: user auth #42, fix: payment bug #38, refactor: DB layer #35) with status. When asked to review, simulate reading a diff and give 3 specific code review comments. For issues, list 4 realistic bug reports. For commits, describe 3 realistic changes. Under 200 words.`,score:'Did you review a PR AND triage issues or summarise commits?'},quiz:[{q:'Most powerful daily use of GitHub connector?',opts:['Storing passwords in GitHub secrets','Writing all code through Claude chat','Reviewing PRs, triaging issues, summarising changes with AI context','Replacing GitHub with Claude entirely'],ans:2,exp:'The connector augments workflow — Claude reviews diffs, surfaces risks, summarises changes faster than reading manually.'},{q:'Which command reviews code changes?',opts:['"git diff HEAD~1"','"Review PR #42 and flag security risks"','"Open GitHub.com"','"git log --oneline"'],ans:1,exp:'GitHub connector understands natural language — no git commands needed.'}]},
-  slack:{name:'Slack',icon:'💬',color:'rgba(61,214,140,0.1)',accent:'var(--green)',type:'third-party',tagline:'Your team messages, intelligently managed',desc:'The Slack MCP connector lets Claude read messages, draft replies, summarise channels, and send messages — bridging team communication with AI intelligence.',concepts:[{title:'💬 What Claude can do',items:['Summarise unread messages in a channel','Draft and send replies','Search across Slack for decisions','Summarise a thread instantly','Find what was decided in a channel']},{title:'📋 Channel intelligence',body:"'What was decided in #product-updates this week?' — Claude reads the week's messages, extracts decisions, gives you a crisp summary in seconds."},{title:'🤝 Drafting responses',body:"Tell Claude the context ('my team is frustrated about the deadline') and Claude writes a clear, empathetic, actionable Slack message."}],samples:["Summarise what happened in #general today","Draft a reply to the sprint planning thread","Find what was decided about the launch date","What are my unread DMs?","Write a message about a delayed release"],lab:{mission:'Navigate Slack intelligently: summarise channels, draft replies, find past decisions.',steps:['Summarise a channel','Draft a message','Search for a decision or thread'],hints:["Summarise today's messages in #engineering","Draft a reply to the standup thread: my blocker is X","Find when the team decided on the new API design","Write a message about a 1-week deadline extension"],sys:`You are a Slack connector instructor. Simulate a Slack workspace. When asked to summarise a channel, invent 5-6 realistic team messages about a project. When drafting a Slack message, write in Slack style — concise, sometimes uses emoji. When asked to find a decision, invent a realistic conversation thread. Teach channel intelligence and drafting best practices. Under 200 words.`,score:'Did you summarise a channel AND draft a message?'},quiz:[{q:'Fastest way to catch up on a busy Slack channel?',opts:['Read every message manually','Ask Claude to summarise the channel','Leave the channel','Ask a colleague to summarise it'],ans:1,exp:'Claude reads the whole channel and gives a crisp summary of decisions, action items, and key discussions in seconds.'},{q:'For a sensitive Slack message, what context should you give Claude?',opts:['Nothing — just say "write a Slack message"','The situation, relationship, tone needed, and constraints',"Only the recipient's name",'The exact words you want Claude to copy'],ans:1,exp:'More context = better draft. Situation, relationships, tone — treat it like briefing a skilled colleague.'}]}
+  fundamentals:{
+    name:'Claude Fundamentals',icon:'⬡',color:'rgba(0,229,212,0.1)',accent:'var(--teal)',
+    tagline:'Understand what Claude really is and how to use it effectively',
+    desc:'Claude is not a search engine, not a simple chatbot, and not a tool that just answers questions. It is a large language model capable of reasoning, writing, coding, analysing, and collaborating on complex intellectual tasks. Understanding how it works fundamentally changes how useful it becomes.',
+    concepts:[
+      {title:'🧠 What Claude actually is',body:'Claude is an autoregressive transformer-based language model trained by Anthropic using Constitutional AI and RLHF (Reinforcement Learning from Human Feedback). It predicts the next token based on all preceding context. This means it does not "know" things the way humans do — it generates responses based on learned statistical patterns from vast training data, refined to be helpful, harmless, and honest.'},
+      {title:'📐 The model family and when to use each',body:'Claude Opus: Maximum reasoning capability. Use for complex multi-step problems, nuanced analysis, and research-grade tasks. Claude Sonnet: Best balance of speed and intelligence. Use for coding, writing, and most daily tasks. Claude Haiku: Fastest and lightest. Use for high-volume, simple, or real-time tasks where speed matters more than depth.'},
+      {title:'📏 Context window — what it means practically',body:'The context window is the total amount of text Claude can "see" at once — including your entire conversation, any files you upload, and its own responses. Claude Sonnet has a 200,000 token context window (~150,000 words). This means you can paste an entire codebase, a full research paper, or a long conversation and Claude holds all of it in working memory simultaneously. No other tool gives you this.'},
+      {title:'⚡ The prompting fundamentals every CSE student must know',items:['Be specific about what you want — vague input gives vague output','Give Claude a role: "You are a senior software engineer reviewing my code"','Specify output format: "Give me a JSON object", "Write in IEEE format", "Explain like I am in second year"','Use examples: show Claude one example of what you want, it will match the pattern','Iterate: Claude remembers the full conversation — build on previous responses instead of starting over','Ask Claude to think step by step for complex reasoning problems']},
+      {title:'🔁 What Claude can and cannot do',body:'Claude can: write and debug code in any language, read and analyse uploaded files, reason through complex problems, write in any style or format, remember everything said in the current conversation. Claude cannot: browse the web without the search connector, remember previous conversations by default, execute code without the code execution tool, access real-time data without connectors.'}
+    ],
+    quiz:[
+      {q:'What training technique does Anthropic use to align Claude's behaviour?',opts:['Supervised fine-tuning only','Constitutional AI and RLHF','Reinforcement learning with game rewards','Manual rule-based filtering'],ans:1,exp:'Anthropic uses Constitutional AI — a set of principles Claude is trained to follow — combined with RLHF to make Claude helpful, harmless, and honest.'},
+      {q:'A B.Tech student pastes a 10,000-line codebase into Claude. What happens?',opts:['Claude crashes — too much input','Claude reads only the first 1000 lines','Claude processes the entire codebase in its context window','Claude asks you to split it into smaller parts'],ans:2,exp:'Claude's 200k token context window (~150k words) can hold very large codebases, documents, or conversations entirely in working memory.'},
+      {q:'Which prompting technique produces the best results for complex problems?',opts:['Single short question','Ask Claude to think step by step','Always use bullet points','Keep prompts under 50 words'],ans:1,exp:'Asking Claude to think step by step activates chain-of-thought reasoning, dramatically improving accuracy on complex, multi-step problems.'},
+      {q:'What is the key difference between Claude Opus and Claude Haiku?',opts:['Opus is free, Haiku is paid','Opus has higher reasoning capability, Haiku is faster and lighter','Haiku supports more languages','They are identical — just different names'],ans:1,exp:'Opus is Anthropic's most capable model for complex reasoning. Haiku is optimised for speed and efficiency on simpler tasks.'}
+    ],
+    sys:`You are Claude, an expert AI assistant helping B.Tech CSE students master AI tools. The student is practicing using Claude for real academic and technical work. Engage deeply with whatever they ask — coding, theory, problem solving, writing, anything. Be direct, technically accurate, and treat them as intelligent students capable of handling depth. Never oversimplify. Never refuse reasonable academic questions. Give complete, useful answers.`
+  },
+  coding:{
+    name:'Claude for Coding',icon:'💻',color:'rgba(91,138,245,0.1)',accent:'var(--blue)',
+    tagline:'Debug, build, review, and understand any code with Claude',
+    desc:'Claude is arguably the most powerful coding assistant available today. It can write, debug, refactor, explain, and review code in every major programming language. For a CSE student, this means having a senior engineer available 24/7 who never gets tired, never judges, and always explains the reasoning.',
+    concepts:[
+      {title:'🐛 Debugging with Claude',body:'Paste your code and the error message. Claude identifies the root cause, explains why the error occurs, and provides the corrected code. More importantly it explains what you did wrong so you do not repeat it. Always include the full error stack trace — not just the last line. The more context you give, the more precise the fix.'},
+      {title:'🏗️ Building from scratch',body:'Describe what you want to build in plain English. Claude writes the complete implementation. For larger projects, describe the architecture first, get Claude to design the structure, then implement module by module. Use Claude to write the boilerplate, then focus your energy on the novel parts.'},
+      {title:'🔍 Code review and refactoring',body:'Paste any code and ask Claude to review it for: bugs, security vulnerabilities, performance issues, readability, adherence to design patterns, or SOLID principles. Claude gives line-level feedback like a senior engineer in a code review. This is how you learn to write production-quality code.'},
+      {title:'📖 Understanding unfamiliar code',body:'Paste any code — open source libraries, legacy systems, your professor's example code — and ask Claude to explain it line by line, or explain the overall architecture, or explain a specific function. This is how you learn from real codebases, which is far more valuable than textbook examples.'},
+      {title:'🧪 Test case generation',body:'Ask Claude to generate comprehensive test cases for any function. Claude considers edge cases, boundary conditions, null inputs, and stress tests that you might miss. Good testing habits built now will define your career as an engineer.'},
+      {title:'🌐 Languages Claude handles expertly',body:'Python, Java, C, C++, JavaScript, TypeScript, Go, Rust, SQL, HTML/CSS, Shell scripting, R, MATLAB, Assembly, and more. You can also ask Claude to translate code from one language to another — paste Python, get Java.'}
+    ],
+    quiz:[
+      {q:'What should you always include when asking Claude to debug code?',opts:['Only the function that has the bug','The full error stack trace and relevant code context','Just describe the error in words','The entire project zip file'],ans:1,exp:'The full stack trace tells Claude exactly where the error originated and what the call chain looked like — essential for accurate diagnosis.'},
+      {q:'You have a working function but it runs in O(n²). How should you ask Claude to help?',opts:['Ask Claude to rewrite it completely from scratch','Paste the function and ask Claude to analyse the time complexity and suggest optimisations','Ask Claude what O(n²) means','Ask Claude to run the code'],ans:1,exp:'Providing the actual code and asking for complexity analysis + optimisation gives Claude everything it needs to suggest a better algorithm with explanation.'},
+      {q:'What is the most valuable use of Claude for learning to code?',opts:['Having Claude write all your assignments','Using Claude to understand why code works, not just that it works','Asking Claude for answers without reading them','Using Claude only for syntax errors'],ans:1,exp:'Understanding the reasoning — why a solution works, what the tradeoffs are — builds real engineering knowledge. Using Claude as an answer machine without engaging with the explanation produces shallow learning.'},
+      {q:'You find an open source library on GitHub you want to use but cannot understand it. What do you do?',opts:['Find a different library','Paste key files into Claude and ask for an architectural explanation','Read the documentation for weeks','Ask a classmate'],ans:1,exp:'Claude can read and explain large codebases — paste the core files and ask Claude to explain the architecture, the key abstractions, and how to use it.'}
+    ],
+    sys:`You are an expert software engineer and Claude, helping B.Tech CSE students with real coding work. When shown code, analyse it deeply. Debug with full explanation of root cause. Write complete, production-quality code when asked. Review code like a senior engineer. Explain any concept at the right depth for a CSE undergraduate. Support Python, Java, C, C++, JavaScript, and any other language the student uses. Never give incomplete code snippets when a complete implementation is needed. Never refuse to help with any legitimate programming task.`
+  },
+  dsa:{
+    name:'DSA & Problem Solving',icon:'🧩',color:'rgba(167,139,250,0.1)',accent:'var(--purple)',
+    tagline:'Master algorithms and data structures with Claude as your thinking partner',
+    desc:'Data Structures and Algorithms is the foundation of computer science and the primary filter in technical interviews at every top tech company. Claude can explain any algorithm intuitively, help you derive solutions, analyse complexity, and walk through problems step by step — making it the most powerful DSA study tool available.',
+    concepts:[
+      {title:'🌳 Understanding data structures deeply',body:'Do not memorise data structures — understand when and why to use them. Ask Claude: "When would I use a heap over a sorted array?" or "What are the tradeoffs between a hash map and a BST for this problem?" Claude explains the intuition behind every data structure, not just the definition.'},
+      {title:'🔄 Algorithm intuition over memorisation',body:'The worst way to learn algorithms is to memorise implementations. The right way is to understand the core idea. Ask Claude to explain the intuition behind any algorithm — why does quicksort work? What is the actual insight behind Dijkstra? Why does dynamic programming avoid recomputation? Once you understand the why, the implementation follows naturally.'},
+      {title:'📊 Complexity analysis',body:'Ask Claude to analyse the time and space complexity of any code you write. More importantly, ask Claude to explain how to derive the complexity yourself. Understanding recurrence relations, amortised analysis, and master theorem properly separates good engineers from great ones.'},
+      {title:'🏆 Competitive programming and LeetCode',body:'Paste any problem and ask Claude to help you think through the approach — not just give the answer. Ask: "What category of problem is this? What data structure would be useful here? What is the brute force, and how do I optimise it?" Use Claude as a thinking partner, not an answer generator. This is how you build problem-solving intuition.'},
+      {title:'📝 Standard topics every CSE student must master',items:['Arrays, strings, two pointers, sliding window','Linked lists, stacks, queues','Trees — BST, AVL, segment trees, tries','Graphs — BFS, DFS, Dijkstra, Bellman-Ford, Floyd-Warshall, MST','Dynamic programming — memoisation, tabulation, classic patterns','Sorting and searching — quicksort, mergesort, binary search variations','Hashing — collision resolution, load factors','Heaps and priority queues']}
+    ],
+    quiz:[
+      {q:'What is the time complexity of searching in a balanced BST?',opts:['O(1)','O(log n)','O(n)','O(n log n)'],ans:1,exp:'A balanced BST halves the search space at each node — giving O(log n) search, insert, and delete operations.'},
+      {q:'When should you use dynamic programming over recursion?',opts:['Always — DP is always faster','When the problem has overlapping subproblems and optimal substructure','When you need O(1) space','When the input is always sorted'],ans:1,exp:'DP is applicable when subproblems repeat (overlapping subproblems) and the optimal solution can be built from optimal subsolutions (optimal substructure). It trades space for time by storing computed results.'},
+      {q:'What is the key insight behind Dijkstra's algorithm?',opts:['It tries all possible paths','It always processes the currently closest unvisited node — greedy shortest path','It uses dynamic programming on the graph','It works only on trees'],ans:1,exp:'Dijkstra's greedy insight: the node with the current minimum distance cannot be improved by any future path (assuming non-negative weights). This allows us to finalise distances one node at a time.'},
+      {q:'You need to find the k most frequent elements in an array. What data structure is most efficient?',opts:['Sorted array','Stack','Min-heap of size k','Linked list'],ans:2,exp:'A min-heap of size k maintains the k largest frequencies efficiently. When a new element has higher frequency than the minimum in the heap, replace it. This gives O(n log k) time — better than sorting at O(n log n).'}
+    ],
+    sys:`You are an expert computer science educator and competitive programmer helping B.Tech CSE students master DSA. When a student presents a problem, help them think through it — explain the approach, the intuition, the complexity. When they show code, analyse it for correctness and efficiency. Explain algorithms from first principles. Cover LeetCode, competitive programming, and university exam problems with equal depth. Push students to understand the why behind every solution, not just the what.`
+  },
+  writing:{
+    name:'Academic Writing',icon:'📝',color:'rgba(245,168,58,0.1)',accent:'var(--amber)',
+    tagline:'Write research papers, reports, and academic documents at publication standard',
+    desc:'Academic writing is a skill that determines your grades, your research output, and eventually your career trajectory. Claude can help you write at IEEE and Springer standard — not by writing for you, but by helping you articulate your ideas clearly, structure your arguments properly, and meet the formal requirements of academic publishing.',
+    concepts:[
+      {title:'📄 IEEE and Springer paper structure',body:'Every research paper follows a standard structure: Abstract (150-250 words — problem, method, results, conclusion), Introduction (motivation, problem statement, contributions, paper organisation), Related Work (situate your work in the literature), Methodology (reproducible description of your approach), Results (objective presentation of findings), Discussion (interpretation, limitations), Conclusion (summary and future work), References (IEEE or APA format). Claude can help with every section.'},
+      {title:'✍️ Writing the abstract',body:'The abstract is the most read and most important part of any paper. It must answer four questions in order: What problem are you solving and why does it matter? What method did you use? What did you find? What does it mean? Ask Claude to review your abstract against these four criteria — most student abstracts fail on the third and fourth questions.'},
+      {title:'📚 Literature review',body:'A literature review is not a list of summaries — it is a critical synthesis that identifies gaps your work fills. Ask Claude to help you: group related papers by theme, identify contradictions between studies, articulate what is missing from existing work, and position your contribution clearly. Paste paper abstracts and Claude helps you synthesise them.'},
+      {title:'🔬 Writing the methodology',body:'The methodology section must be reproducible — a reader should be able to repeat your experiment exactly. Ask Claude to check: Is every parameter specified? Is the dataset described completely? Are evaluation metrics defined precisely? Is the experimental setup unambiguous? Claude gives line-level feedback on technical precision.'},
+      {title:'📊 Presenting results objectively',body:'Results must be presented without interpretation — just the numbers, the tables, the figures. Interpretation goes in the Discussion. Ask Claude to help you: design result tables, write figure captions, present comparative results clearly, and avoid language that interprets in the results section.'}
+    ],
+    quiz:[
+      {q:'What are the four things an IEEE abstract must answer?',opts:['Introduction, method, results, future work','Problem and motivation, method, findings, significance','Title, authors, keywords, summary','Background, hypothesis, experiment, conclusion'],ans:1,exp:'A well-structured abstract answers: what problem and why it matters, what method was used, what was found, and what it means — in that order, within 150-250 words.'},
+      {q:'What is the fundamental difference between a literature review and a list of paper summaries?',opts:['A literature review is longer','A literature review critically synthesises work to identify gaps your research fills','A literature review only includes recent papers','There is no difference'],ans:1,exp:'Listing summaries shows you read papers. A proper literature review shows you understand the field — its progress, contradictions, and gaps — and positions your contribution within that landscape.'},
+      {q:'In which section does interpretation of results belong?',opts:['Results section','Abstract','Discussion section','Introduction'],ans:2,exp:'Results section presents findings objectively — numbers, tables, figures. The Discussion section interprets what those findings mean, their implications, and limitations.'},
+      {q:'What must be true of a methodology section for it to meet academic standards?',opts:['It must be at least 500 words','It must be fully reproducible — a reader can repeat the experiment exactly','It must include the source code','It must reference at least 10 papers'],ans:1,exp:'Reproducibility is the gold standard of scientific methodology. Every parameter, dataset, metric, and experimental condition must be specified precisely enough for independent replication.'}
+    ],
+    sys:`You are an expert academic writing coach helping B.Tech CSE students write at IEEE and Springer publication standard. Help students structure papers, write and review abstracts, build literature reviews, write methodology sections, and present results properly. When reviewing writing, give specific, actionable feedback — not just "this is good" or "improve this". Point to exact sentences and explain precisely what to change and why. Treat students as emerging researchers capable of publication-quality work.`
+  },
+  sysdesign:{
+    name:'System Design',icon:'🏗️',color:'rgba(61,214,140,0.1)',accent:'var(--green)',
+    tagline:'Design scalable systems — the skill that defines senior engineers',
+    desc:'System design is the ability to architect large-scale software systems that are reliable, scalable, and maintainable. It is the primary skill tested in senior engineering interviews and the defining competency of architects and tech leads. Claude can walk through any system design problem with the depth of a senior engineer.',
+    concepts:[
+      {title:'🎯 The system design framework',body:'Every system design problem follows the same framework: Clarify requirements (functional and non-functional), Estimate scale (users, data volume, request rate), Define the API, Design the data model and database choice, Design the high-level architecture, Deep dive into critical components, Identify bottlenecks and propose solutions. Ask Claude to walk through any system using this framework.'},
+      {title:'⚖️ Fundamental tradeoffs every engineer must know',body:'CAP theorem: a distributed system can guarantee at most two of Consistency, Availability, and Partition tolerance — never all three. SQL vs NoSQL: relational databases for structured data and complex queries; NoSQL for scale, flexibility, and high write throughput. Monolith vs Microservices: monoliths are simpler to develop and deploy; microservices scale independently but add operational complexity. Synchronous vs Asynchronous: synchronous is simpler; async with message queues improves resilience and decoupling.'},
+      {title:'🔧 Key components of any large-scale system',items:['Load balancers — distribute traffic, enable horizontal scaling','CDN — serve static assets from edge locations close to users','Caching — Redis/Memcached for hot data, reduces database load','Message queues — Kafka, RabbitMQ for async processing and decoupling','Databases — primary, replica, sharding strategies','API gateway — authentication, rate limiting, routing','Search — Elasticsearch for full-text search at scale']},
+      {title:'📐 Database design and schema',body:'Ask Claude to design a complete database schema for any application. Include: entity relationships, primary and foreign keys, indexing strategy, normalisation decisions, and whether to use SQL or NoSQL. Understanding schema design deeply — and the performance implications of every choice — is what separates junior from senior engineers.'},
+      {title:'📈 Scalability patterns',body:'Horizontal vs vertical scaling, database sharding (horizontal partitioning), read replicas, caching layers, rate limiting, circuit breakers, consistent hashing, event-driven architecture. Ask Claude to explain any of these with a real-world example and when to apply them.'}
+    ],
+    quiz:[
+      {q:'What does the CAP theorem state?',opts:['A system must have Caching, APIs, and Persistence','A distributed system can guarantee at most two of Consistency, Availability, and Partition tolerance','You need at least 3 servers for a distributed system','CAP stands for Cost, Architecture, Performance'],ans:1,exp:'CAP theorem (Brewer's theorem) states that a distributed data store cannot simultaneously provide all three of: Consistency (every read gets the most recent write), Availability (every request gets a response), Partition tolerance (system works despite network failures).'},
+      {q:'When would you choose a NoSQL database over a relational database?',opts:['When you have complex JOIN queries','When you need ACID transactions across multiple tables','When you need high write throughput, flexible schema, and horizontal scaling','When data is highly structured and relational'],ans:2,exp:'NoSQL excels at high write throughput, horizontal scaling, and flexible/unstructured data. Relational databases excel at complex queries, joins, and strict ACID guarantees.'},
+      {q:'What is the primary purpose of a message queue like Kafka in system design?',opts:['To store user sessions','To replace the database','To decouple services and enable asynchronous processing','To cache API responses'],ans:2,exp:'Message queues decouple producers from consumers — the sending service does not wait for the receiving service to process. This improves resilience, enables async processing, and allows services to scale independently.'},
+      {q:'A system has 10 million users and the database is the bottleneck. What is the first thing to try?',opts:['Rewrite the application in a faster language','Add a caching layer (Redis) for frequently read data','Buy a bigger server','Add more application servers'],ans:1,exp:'Caching hot data in Redis dramatically reduces database load — frequently read data is served from memory at microsecond speed instead of hitting the database. This is almost always the first optimisation for read-heavy systems.'}
+    ],
+    sys:`You are a principal software engineer and system design expert helping B.Tech CSE students understand large-scale system architecture. When presented with a design problem, walk through it systematically — requirements, scale estimation, API design, data model, architecture, deep dives, and bottlenecks. Explain every tradeoff. Use real-world examples (how Netflix does CDN, how Twitter does timeline, how Uber does location). Give complete, detailed answers at the depth expected in a senior engineering interview. Never oversimplify.`
+  },
+  cyber:{
+    name:'Cybersecurity',icon:'🔐',color:'rgba(240,96,122,0.1)',accent:'var(--rose)',
+    tagline:'Understand attacks, defences, and security engineering at depth',
+    desc:'Cybersecurity is one of the fastest-growing fields in computer science. Understanding how systems are attacked — and how to defend them — is essential for every software engineer, not just security specialists. Claude can explain attack vectors, help with CTF challenges, review code for vulnerabilities, and teach security engineering principles.',
+    concepts:[
+      {title:'⚔️ Core attack categories every CSE student must know',items:['Injection attacks — SQL injection, command injection, XSS, SSTI','Authentication attacks — brute force, credential stuffing, session hijacking','Cryptographic attacks — weak ciphers, padding oracle, timing attacks','Network attacks — MITM, ARP spoofing, DNS poisoning, packet sniffing','Social engineering — phishing, spear phishing, pretexting','Binary exploitation — buffer overflow, format string, ROP chains','Web vulnerabilities — IDOR, CSRF, SSRF, XXE, open redirect']},
+      {title:'🛡️ Security engineering principles',body:'Security by design means building security in from the start, not bolting it on. Key principles: least privilege (give minimum necessary permissions), defence in depth (multiple layers of security), fail securely (system fails to a safe state), do not trust user input (validate and sanitise everything), use proven cryptography (never roll your own crypto), and threat modelling (systematically identify what can go wrong before it does).'},
+      {title:'🔍 Code security review',body:'Ask Claude to review any code for security vulnerabilities. Claude looks for: unsanitised input, SQL queries built with string concatenation, hardcoded credentials, insecure random number generation, improper error handling that leaks information, insecure direct object references, and missing authentication checks. Paste your code and ask for a security review — this is how you develop secure coding instincts.'},
+      {title:'🏁 CTF (Capture the Flag)',body:'CTF challenges are the best way to learn offensive security practically. Categories: Web (OWASP Top 10 in practice), Crypto (breaking weak encryption), Pwn (binary exploitation), Reverse Engineering (understanding compiled binaries), Forensics (extracting hidden information), OSINT (open source intelligence). Ask Claude to help you think through any CTF challenge — explain your observations and Claude helps you reason toward the solution.'},
+      {title:'🔐 Cryptography fundamentals',body:'Symmetric encryption (AES) vs asymmetric (RSA, ECC). Hash functions (SHA-256, bcrypt for passwords). Digital signatures. Public Key Infrastructure (PKI) and TLS. Key exchange (Diffie-Hellman). Understanding how these work — not just that they exist — lets you identify when they are misused. Ask Claude to explain any cryptographic concept from first principles.'}
+    ],
+    quiz:[
+      {q:'What is SQL injection and how is it prevented?',opts:['A type of DDoS attack prevented by firewalls','Inserting malicious SQL into input fields — prevented by parameterised queries/prepared statements','A network attack prevented by encryption','A social engineering attack prevented by training'],ans:1,exp:'SQL injection occurs when user input is directly concatenated into SQL queries, allowing attackers to modify the query logic. Parameterised queries (prepared statements) separate code from data, making injection impossible regardless of input content.'},
+      {q:'What does "least privilege" mean in security engineering?',opts:['Use the cheapest server','Give every component only the minimum permissions it needs to function','Never give admin access to anyone','Use open source software only'],ans:1,exp:'Least privilege limits the damage of any single compromised component. A database user that can only SELECT cannot be used to DROP tables. An API key scoped to read-only cannot be used to delete data.'},
+      {q:'Why should you never implement your own cryptographic algorithm?',opts:['It is against the law','Custom crypto is slower','Cryptography requires mathematical proofs of security that take years of expert analysis — home-grown algorithms almost always have subtle, exploitable weaknesses','You need a patent to implement crypto'],ans:2,exp:'Even cryptographers with PhDs make mistakes in crypto implementation. The algorithms we trust (AES, RSA, SHA-256) have survived decades of public cryptanalysis. A custom algorithm has had none of this scrutiny.'},
+      {q:'What is the difference between authentication and authorisation?',opts:['They mean the same thing','Authentication verifies who you are; authorisation determines what you are allowed to do','Authentication is for APIs; authorisation is for users','Authorisation comes before authentication'],ans:1,exp:'Authentication: proving identity (login with credentials). Authorisation: what that identity is permitted to do (role-based access control, permissions). Confusing the two causes serious security vulnerabilities — authenticating a user does not mean they are authorised for every action.'}
+    ],
+    sys:`You are an expert cybersecurity engineer and educator helping B.Tech CSE students understand both offensive and defensive security. Explain attack techniques with technical depth — how they work mechanically, not just that they exist. Help with CTF challenges by guiding thinking rather than just giving answers. Review code for vulnerabilities with specific, actionable findings. Teach security engineering principles that produce secure systems. Cover web security, network security, cryptography, binary exploitation, and secure coding practices. Be technically precise and treat students as future security engineers.`
+  },
+  aiml:{
+    name:'AI, ML, DL, RAG & LLM',icon:'🤖',color:'rgba(56,189,248,0.1)',accent:'var(--sky)',
+    tagline:'Build real intelligence — from classical ML to large language models',
+    desc:'Artificial intelligence is not a monolith — it spans classical machine learning, deep neural networks, computer vision, NLP, and now large language models and retrieval-augmented generation. Claude can explain any concept from first principles, help you implement models, debug training issues, and guide you through building real AI systems.',
+    concepts:[
+      {title:'📊 Classical Machine Learning foundations',body:'Before deep learning, understand the foundations: Linear and logistic regression (the basis of everything), Decision trees and random forests, Support vector machines, K-means and hierarchical clustering, Principal component analysis, Bias-variance tradeoff — the most important concept in ML, Cross-validation and model evaluation, Feature engineering and selection. Ask Claude to explain the mathematics and intuition behind any of these — and when to use each.'},
+      {title:'🧠 Deep Learning architectures',body:'Feedforward networks — the basic building block. CNNs — convolutional neural networks for spatial data (images, video). RNNs and LSTMs — sequential data, but largely replaced by transformers. Transformers — the architecture behind every modern LLM (attention mechanism, positional encoding, encoder-decoder). ResNets — skip connections that enabled very deep networks. GANs — generative adversarial networks. Diffusion models — the technology behind image generation. Ask Claude to explain the architecture and mathematical intuition of any of these.'},
+      {title:'⚙️ Training deep learning models',body:'Loss functions — cross-entropy, MSE, contrastive loss. Optimisers — SGD, Adam, AdamW. Learning rate scheduling. Regularisation — dropout, batch normalisation, weight decay. Overfitting and underfitting — how to diagnose and fix. Gradient vanishing and exploding — why it happens and solutions. Transfer learning — fine-tuning pretrained models (the most practical skill in industry). Ask Claude to help debug any training issue — describe your loss curves, metrics, and architecture.'},
+      {title:'🔍 RAG — Retrieval Augmented Generation',body:'RAG solves the fundamental limitation of LLMs — they cannot access information beyond their training data. Architecture: documents are chunked and embedded into vectors, stored in a vector database (Pinecone, ChromaDB, FAISS, Weaviate), at query time the question is embedded and semantically similar chunks retrieved, the retrieved context is passed to the LLM with the question. Key decisions: chunking strategy (size, overlap), embedding model choice, retrieval method (dense, sparse, hybrid), reranking. Ask Claude to guide you through building a complete RAG pipeline.'},
+      {title:'🤖 Large Language Models — how they actually work',body:'LLMs are transformer models trained on vast text corpora using next-token prediction. The key concepts: tokenisation (text to numbers), embeddings (tokens to vectors), attention mechanism (how tokens relate to each other), the softmax distribution over vocabulary, temperature and sampling strategies, prompt engineering as interface, context window as working memory, fine-tuning vs RAG vs prompting tradeoffs, hallucination — why it happens and mitigation strategies, evaluation — benchmarks, human evaluation, LLM-as-judge.'}
+    ],
+    quiz:[
+      {q:'What is the bias-variance tradeoff in machine learning?',opts:['A tradeoff between model speed and accuracy','High bias means underfitting (too simple); high variance means overfitting (too complex) — optimal models balance both','A tradeoff between training data size and model size','Bias and variance always move in the same direction'],ans:1,exp:'Bias measures how wrong the model is on average (systematic error from wrong assumptions). Variance measures how much the model changes with different training data (sensitivity to noise). Simple models have high bias, low variance. Complex models have low bias, high variance. The goal is minimising total error = bias² + variance + irreducible noise.'},
+      {q:'What is the key innovation of the Transformer architecture?',opts:['Using more layers than previous networks','Convolutional filters applied to text','The self-attention mechanism — allowing every token to directly attend to every other token regardless of distance','Recurrent connections that preserve sequence order'],ans:2,exp:'Self-attention allows the model to relate any position in a sequence to any other position in a single operation, solving the long-range dependency problem that plagued RNNs. This is what enables transformers to understand context across very long sequences.'},
+      {q:'Why does RAG outperform pure LLM prompting for knowledge-intensive tasks?',opts:['RAG uses a bigger model','RAG retrieves relevant, up-to-date, source-specific information at query time rather than relying on what the LLM memorised during training','RAG is faster than LLMs','RAG eliminates hallucination completely'],ans:1,exp:'LLMs hallucinate when asked about specific facts they were not trained on or that have changed. RAG grounds answers in retrieved documents — reducing hallucination and enabling the LLM to answer questions about proprietary, recent, or domain-specific knowledge.'},
+      {q:'What is transfer learning and why is it the most practical ML skill in industry?',opts:['Training a model from scratch on new data','Using a model trained on one task as the starting point for a related task — fine-tuning on domain-specific data','Transferring model weights between different programming frameworks','Training multiple models and averaging their predictions'],ans:1,exp:'Training large models from scratch requires massive compute and data. Transfer learning takes a pretrained model (which has already learned general representations) and fine-tunes it on your specific task with far less data and compute. Almost all production ML in industry uses this approach.'}
+    ],
+    sys:`You are an expert AI/ML researcher and engineer helping B.Tech CSE students understand and implement real AI systems. Cover classical ML, deep learning, transformers, LLMs, RAG, and everything in between. Explain mathematics when it matters — do not hide the equations, explain what they mean intuitively. Help students implement models, debug training, design architectures, and build RAG pipelines. When a student asks about a paper, architecture, or technique, give a complete technical explanation. Treat students as future ML engineers and researchers.`
+  },
+  connectors:{
+    name:'Claude Connectors',icon:'🔌',color:'rgba(0,229,212,0.1)',accent:'var(--teal)',
+    tagline:'Extend Claude with real-world tools — web, files, code, and external APIs',
+    desc:'Claude connectors (powered by the Model Context Protocol — MCP) extend Claude beyond conversation into real action. Instead of just answering questions, Claude can search the web, read your files, run code, manage your calendar, query databases, and interact with any external service. This is how Claude becomes a genuine productivity tool rather than just a chat interface.',
+    concepts:[
+      {title:'🔧 Model Context Protocol (MCP) — the architecture',body:'MCP is an open protocol developed by Anthropic that standardises how LLMs connect to external tools and data sources. Architecture: MCP hosts (Claude) connect to MCP servers (tools) that expose resources and tools. Communication uses JSON-RPC 2.0. Each MCP server declares what it can do — Claude decides when and how to use it. This means any developer can build a connector for any service and Claude can use it.'},
+      {title:'🌐 Built-in connectors',items:['Web Search — real-time internet queries, current news, live data','Code Execution — Python sandbox, file processing, chart generation, document creation','Calendar — natural language scheduling, event creation and retrieval','Reminders — todo lists, time-based alerts','Maps & Places — location search, route planning, itinerary building']},
+      {title:'🔗 Third-party MCP connectors',body:'Any external service can be connected via MCP: Gmail (read, draft, send), Google Drive (search, read, summarise documents), GitHub (PR review, issue triage, commit analysis), Slack (channel summaries, message drafting), Databases (PostgreSQL, MySQL, Supabase), and hundreds more. For a CSE student: connect GitHub and Claude can review your PRs; connect your database and Claude can write and explain SQL queries against your actual schema.'},
+      {title:'⚡ Combining connectors for complex workflows',body:'The real power is combining connectors: Web Search + Code Execution: research a topic and immediately write code based on findings. GitHub + Web Search: review a PR and search for best practices on the patterns used. Drive + Gmail: read a document and draft an email summarising it. Calendar + Reminders: schedule and track project milestones. Think of Claude as an orchestrator that coordinates multiple tools intelligently.'},
+      {title:'🛠️ Building your own MCP connector',body:'As a CSE student, you can build MCP servers in Python or TypeScript. An MCP server exposes: Resources (data Claude can read), Tools (actions Claude can take), and Prompts (reusable prompt templates). Building a connector for your university's internal system, your project's database, or any API you work with turns Claude into a domain-specific assistant for your exact context.'}
+    ],
+    quiz:[
+      {q:'What protocol underlies Claude connectors?',opts:['REST API','GraphQL','Model Context Protocol (MCP) using JSON-RPC 2.0','WebSocket protocol'],ans:2,exp:'MCP (Model Context Protocol) is the open protocol Anthropic developed to standardise LLM-to-tool connections. It uses JSON-RPC 2.0 for communication and allows any developer to build connectors for any service.'},
+      {q:'As a CSE student, what is the most powerful use of the GitHub connector?',opts:['Storing your passwords','Having Claude write all your assignments','Claude reviewing your PRs, triaging issues, and summarising changes with full code context','Replacing GitHub entirely'],ans:2,exp:'Claude with GitHub access can read your actual diffs, understand the full codebase context, and give senior-engineer-level code review — identifying bugs, security issues, and design problems line by line.'},
+      {q:'What does combining Web Search + Code Execution allow Claude to do?',opts:['Browse social media','Research any topic in real-time and immediately write, run, and iterate on code based on current information','Send emails automatically','Replace a search engine'],ans:1,exp:'Web Search gives Claude current information; Code Execution gives it a Python environment to act on that information. Together: research a dataset, write analysis code, run it, and produce charts — all in one conversation.'},
+      {q:'What is required to build your own MCP connector?',opts:['A special Anthropic license','Implementing the MCP server specification in Python or TypeScript — exposing resources, tools, and prompts','Paying for a premium API tier','A PhD in computer science'],ans:1,exp:'MCP is an open protocol. Any developer can implement an MCP server in Python or TypeScript, expose tools and resources, and connect it to Claude. This is standard software engineering — no special access required.'}
+    ],
+    sys:`You are an expert on Claude's connector ecosystem and the Model Context Protocol. Help B.Tech CSE students understand how connectors work architecturally, how to use them effectively for real academic and professional tasks, and how to build their own MCP servers. When a student wants to use a specific connector for a task, guide them through it practically. When they want to build a connector, walk through the MCP specification, server implementation, and tool definition. Treat students as developers who will build production systems.`
+  },
+  projects:{
+    name:'Projects & Final Year',icon:'🚀',color:'rgba(245,168,58,0.1)',accent:'var(--amber)',
+    tagline:'From idea to implementation — complete project guidance with Claude',
+    desc:'Your final year project is the most visible piece of work in your degree. It is what you show employers, what you present at conferences, and what defines your technical identity at graduation. Claude can help at every stage — from idea generation to implementation to documentation to presentation — giving you guidance that would otherwise require a dedicated industry mentor.',
+    concepts:[
+      {title:'💡 Project ideation and scoping',body:'The best projects solve real problems with appropriate technical depth. Ask Claude to help you: identify problems in your domain worth solving, evaluate the technical feasibility of your idea, define the scope correctly (neither too broad nor too trivial), identify the novelty — what your project does that existing solutions do not, and frame it as a research or engineering contribution. Paste your initial idea and ask Claude to stress-test it.'},
+      {title:'🏗️ Project architecture and planning',body:'Before writing a line of code, design the complete architecture. Ask Claude to help you: define functional and non-functional requirements, design the system architecture with component diagram, choose the technology stack with justification, define the database schema, plan the API design, create a realistic timeline with milestones, and identify risks and mitigation strategies. A well-designed project before coding saves months of rework.'},
+      {title:'📋 Documentation that impresses',body:'Great projects have great documentation: README that explains the problem, solution, architecture, and how to run it. Technical report covering background, methodology, implementation, evaluation, and future work. API documentation if you built a service. User manual if you built a product. Ask Claude to help you write each of these — paste your implementation details and Claude structures them into professional documentation.'},
+      {title:'🎤 Viva and presentation preparation',body:'Your viva examiner will ask: Why did you choose this approach over alternatives? What are the limitations of your system? What would you do differently? How does your work compare to related work? What is the technical novelty? Ask Claude to conduct a mock viva — give Claude your project details and ask it to play the examiner. This is the most effective viva preparation possible.'},
+      {title:'📊 Evaluation and results',body:'Every project needs rigorous evaluation. Ask Claude to help you: design the evaluation methodology, choose appropriate metrics, plan experiments that demonstrate your contribution, analyse results objectively, and present findings clearly. The difference between a good project and a great project is almost always the quality of evaluation.'}
+    ],
+    quiz:[
+      {q:'What is the most important thing to define before writing any code for your final year project?',opts:['The programming language','The complete system architecture, requirements, and scope','The user interface design','The GitHub repository name'],ans:1,exp:'Architecture and requirements define every subsequent decision. Technology choices, database design, API structure, and timeline all depend on a clear architectural design. Projects that start coding immediately almost always require major rework.'},
+      {q:'A viva examiner asks "What are the limitations of your system?" What is the best response?',opts:['Say there are no limitations','Acknowledge limitations honestly and explain what you would do to address them with more time','Redirect to the strengths of the project','Say the question is outside scope'],ans:1,exp:'Examiners respect students who demonstrate critical thinking about their own work. Honest acknowledgment of limitations — with thoughtful discussion of how to address them — shows engineering maturity and self-awareness.'},
+      {q:'What makes a project "novel" in an academic context?',opts:['Using the latest programming framework','Solving an existing problem in a new way, applying an existing technique to a new domain, or combining approaches in a new configuration','Building a larger version of an existing system','Using more data than previous work'],ans:1,exp:'Academic novelty does not require reinventing everything — it requires a genuine contribution: a new approach, a new application domain, a new combination of techniques, or a rigorous evaluation that was not done before.'},
+      {q:'What is the most effective way to prepare for your project viva?',opts:['Memorise your entire report','Have Claude conduct a mock viva — ask it to play the examiner with your project details','Read related work the night before','Prepare only for questions you know the answers to'],ans:1,exp:'Mock viva with Claude is highly effective because Claude asks the hard questions examiners actually ask — alternative approaches, limitations, comparisons to related work, technical deep dives — and gives you immediate feedback on your answers.'}
+    ],
+    sys:`You are a senior academic supervisor and industry mentor helping B.Tech CSE students with their final year projects. Help with every stage: idea generation and evaluation, architecture design, technology selection, implementation guidance, documentation writing, evaluation design, and viva preparation. When a student describes their project, engage with it seriously — ask probing questions, identify weaknesses, suggest improvements, and help them think like engineers and researchers. Conduct mock vivas on request. Help write and review project documentation. Treat every student's project as worthy of the same attention a good supervisor would give.`
+  },
+  career:{
+    name:'Career Preparation',icon:'🎯',color:'rgba(61,214,140,0.1)',accent:'var(--green)',
+    tagline:'Land the job — resumes, interviews, and career strategy with Claude',
+    desc:'The transition from student to professional is where preparation determines outcomes. The companies you want to work at hire based on demonstrated ability — technical skills, communication, and problem-solving under pressure. Claude can help you build every component of a successful job search: from a resume that gets past ATS to technical interview performance to negotiating your offer.',
+    concepts:[
+      {title:'📄 Resume that actually works',body:'Most student resumes fail because they list responsibilities instead of achievements. Every bullet point should answer: what did you do, how did you do it, and what was the result? Format: use numbers wherever possible ("Reduced API response time by 40%", "Built system handling 10,000 requests/day"). ATS optimisation: include keywords from the job description naturally. One page for students. Ask Claude to review your resume — paste the job description and your resume and ask for specific improvements.'},
+      {title:'💼 Technical interview preparation',body:'Technical interviews have a predictable structure: Data structures and algorithms (LeetCode style), System design (for experienced roles), Coding in a shared environment, Behavioural questions (STAR format). For DSA: solve problems by thinking aloud, start with brute force then optimise, always discuss time and space complexity. Ask Claude to conduct mock technical interviews — give Claude a difficulty level and topic and solve the problem while explaining your thinking.'},
+      {title:'🗣️ Behavioural interviews — STAR format',body:'Every behavioural answer should follow STAR: Situation (brief context), Task (what you were responsible for), Action (specifically what you did — use "I" not "we"), Result (quantified outcome). Common questions: Tell me about a challenge you faced. Describe a conflict with a teammate. Give an example of leadership. Tell me about a project you are proud of. Ask Claude to help you craft STAR answers for your specific experiences.'},
+      {title:'🏢 Company research strategy',body:'Before any interview: understand the company's business model and how engineering serves it, know their tech stack, read recent engineering blog posts, understand their scale and key challenges, prepare questions that show genuine interest. Ask Claude to help you research any company — Claude can explain their architecture, engineering culture, and what skills they typically value based on their public engineering content.'},
+      {title:'💰 Offer evaluation and negotiation',body:'Never accept the first offer — every offer is negotiable. Understand: base salary, equity (vesting schedule, cliff, strike price), bonus structure, benefits, growth opportunity. Research market rates for your role, location, and experience level. Ask Claude to help you evaluate any offer — provide the details and ask Claude to compare it to market rates and help you frame a negotiation response.'}
+    ],
+    quiz:[
+      {q:'What is the biggest mistake students make on their resume?',opts:['Having too many skills listed','Listing responsibilities instead of quantified achievements','Making it longer than one page','Using bullet points'],ans:1,exp:'Responsibilities tell employers what your job was. Achievements tell them what you actually accomplished. "Responsible for backend development" vs "Built REST API serving 50,000 daily users with 99.9% uptime" — the second is what gets interviews.'},
+      {q:'In a technical interview, what should you always do before coding?',opts:['Start coding immediately to show speed','Ask clarifying questions, discuss the approach, state your assumptions, and get interviewer buy-in on the approach before writing code','Ask the interviewer for the answer','Write the brute force solution and say you will optimise later'],ans:1,exp:'Interviewers evaluate your thinking process, not just whether you get the answer. Clarifying requirements, discussing approaches, and getting alignment before coding demonstrates the communication and engineering judgement of a professional.'},
+      {q:'What does STAR stand for in behavioural interviews?',opts:['Skills, Training, Achievements, Results','Situation, Task, Action, Result','Strategy, Technique, Application, Review','Subject, Topic, Answer, Response'],ans:1,exp:'STAR provides structure: Situation (context), Task (your responsibility), Action (specifically what you did — use "I"), Result (quantified outcome). This structure makes answers concrete, credible, and memorable.'},
+      {q:'Should you negotiate a job offer?',opts:['Never — it risks the offer being withdrawn','Only if the salary is very low','Always — every offer is negotiable, and companies expect it','Only after you have been working there for 6 months'],ans:1,exp:'Negotiation is universally expected in the industry. Companies build negotiation room into initial offers. A professional, evidence-based negotiation (market data, competing offers, your specific value) almost never results in an offer being withdrawn and typically increases compensation by 10-20%.'}
+    ],
+    sys:`You are a senior engineering manager, career coach, and technical interview expert helping B.Tech CSE students land their dream jobs. Help with resume writing and review — give specific, actionable feedback on every bullet point. Conduct mock technical interviews — DSA problems, system design, and code review. Help craft STAR behavioural answers from the student's actual experiences. Guide company research and interview preparation. Help evaluate and negotiate job offers. Be direct and honest — tell students when their resume is weak, when their interview answers need work, and what they need to improve. Treat career preparation as seriously as any technical subject.`
+  }
 };
 
 // ════════════════════════════════════════════════════════════
@@ -545,17 +767,25 @@ async function doLogin() {
 
 async function doRegister() {
   const name=document.getElementById('regName').value.trim();
-  const role=document.getElementById('regRole').value.trim();
-  const company=document.getElementById('regCompany').value.trim();
   const email=document.getElementById('regEmail').value.trim();
+  const course=document.getElementById('regCourse').value.trim();
+  const branch=document.getElementById('regBranch').value.trim();
+  const department=document.getElementById('regDept').value.trim();
+  const section=document.getElementById('regSection').value.trim();
+  const semester=document.getElementById('regSem').value.trim();
+  const enrollment_no=document.getElementById('regEnroll').value.trim();
+  const roll_no=document.getElementById('regRoll').value.trim();
+  const college=document.getElementById('regCollege').value.trim();
   const pw=document.getElementById('regPw').value;
-  if(!name||!email||!pw){showAlert('regAlert','Please fill in all required fields.');return;}
-  setBtn('regBtn',true,'Create Account');
-  const {ok,data}=await apiCall(API.AUTH,{action:'register'},{name,email,password:pw,role,company});
-  setBtn('regBtn',false,'Create Account');
+  if(!name||!email||!course||!branch||!enrollment_no||!roll_no||!college||!pw){
+    showAlert('regAlert','Please fill in all required fields (marked with *).');return;
+  }
+  setBtn('regBtn',true,'Submit Registration');
+  const {ok,data}=await apiCall(API.AUTH,{action:'register'},{name,email,password:pw,course,department,branch,section,semester,enrollment_no,roll_no,college});
+  setBtn('regBtn',false,'Submit Registration');
   if(!ok){showAlert('regAlert',data.error||'Registration failed.');return;}
   showPanel('panelVerifyPending');
-  showAlert('verifyAlert','Account created! Check your email to verify.','ok');
+  showAlert('verifyAlert',data.message||'Registration submitted! You will receive an email once Dr. Ankit Vishnoi approves your request.','ok');
 }
 
 async function doForgot() {
@@ -580,14 +810,23 @@ async function doReset() {
 }
 
 async function handleVerifyParam(token) {
-  const {ok,data}=await apiCall(API.AUTH,{action:'verify-email'},{token});
+  // Show set-password panel — student sets their password on first login
+  window._verifyToken = token;
+  showPanel('panelSetPassword');
+}
+
+async function doVerifyWithPassword() {
+  const pw = document.getElementById('setPw').value;
+  if(!pw){showAlert('setPwAlert','Please enter a password.');return;}
+  setBtn('setPwBtn',true,'Activating...');
+  const {ok,data}=await apiCall(API.AUTH,{action:'verify-email'},{token:window._verifyToken,password:pw});
+  setBtn('setPwBtn',false,'Activate Account');
   window.history.replaceState({},'','/');
   if(ok){
     authToken=data.token; localStorage.setItem('cc_token',authToken);
     currentUser=data.user; loadUserState(); enterApp();
   } else {
-    showPanel('panelLogin');
-    showAlert('loginAlert',data.error||'Verification failed. The link may have expired.','err');
+    showAlert('setPwAlert',data.error||'Verification failed. The link may have expired.');
   }
 }
 
@@ -875,10 +1114,41 @@ function updateScorecard(){
   const certBtn=document.getElementById('certBtn');
   const certTxt=document.getElementById('certTxt');
   const labCount=S.labsDone.size;
-  if(certBtn){certBtn.disabled=labCount<5;}
-  if(certTxt){
-    if(labCount>=5)certTxt.textContent='Certificate unlocked! 🎉';
-    else certTxt.textContent=`Complete ${5-labCount} more lab${5-labCount!==1?'s':''} to unlock`;
+  const certStatus=currentUser?.certStatus||null;
+  if(certStatus==='approved'){
+    if(certBtn){certBtn.disabled=false;certBtn.textContent='🎓 Download Certificate';certBtn.style.borderColor='var(--green)';certBtn.style.color='var(--green)';}
+    if(certTxt)certTxt.textContent='Certificate approved by Dr. Ankit Vishnoi ✅';
+  } else if(certStatus==='pending'){
+    if(certBtn){certBtn.disabled=true;certBtn.textContent='⏳ Awaiting Approval';}
+    if(certTxt)certTxt.textContent='Pending approval from Dr. Ankit Vishnoi';
+  } else if(certStatus==='denied'){
+    if(certBtn){certBtn.disabled=true;certBtn.textContent='❌ Certificate Denied';}
+    if(certTxt)certTxt.textContent='Contact avishnoi.cse@geu.ac.in';
+  } else {
+    if(certBtn){certBtn.disabled=labCount<7;certBtn.textContent='🎓 Request Certificate';certBtn.style.borderColor='';certBtn.style.color='';}
+    if(certTxt){
+      if(labCount>=7)certTxt.textContent='Ready! Click to request certificate.';
+      else certTxt.textContent=`Complete ${7-labCount} more module${7-labCount!==1?'s':''} to unlock`;
+    }
+  }
+}
+
+async function handleCertAction(){
+  const certStatus=currentUser?.certStatus||null;
+  if(certStatus==='approved'){
+    openCert(); return;
+  }
+  if(certStatus==='pending'){
+    alert('Your certificate request is pending approval from Dr. Ankit Vishnoi. You will receive an email once approved.'); return;
+  }
+  // Request certificate
+  const {ok,data}=await apiCall(API.AUTH,{action:'request-certificate'},{});
+  if(ok){
+    currentUser={...currentUser,certStatus:data.status||'pending'};
+    updateScorecard();
+    alert(data.message||'Certificate request submitted!');
+  } else {
+    alert(data.error||'Failed to request certificate.');
   }
 }
 
@@ -899,207 +1169,179 @@ function drawCert(){
   const canvas=document.getElementById('certCanvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  // Taller canvas to fit instructor signature section
-  const W=700, H=560;
-  canvas.width=W; canvas.height=H;
+  const W=900,H=636; canvas.width=W; canvas.height=H;
   canvas.style.width='100%';
+  const u=currentUser||{};
 
-  // ── BACKGROUND
-  ctx.fillStyle='#06080f'; ctx.fillRect(0,0,W,H);
+  // ── WHITE BACKGROUND
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
 
-  // Subtle grid
-  ctx.strokeStyle='rgba(28,36,60,0.9)'; ctx.lineWidth=1;
-  for(let x=0;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
-  for(let y=0;y<H;y+=28){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  // ── COLORFUL GEOMETRIC TRIANGLES (GEU style)
+  // Top-left triangles
+  ctx.fillStyle='#f5a623'; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(180,0); ctx.lineTo(0,200); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#00bcd4'; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(100,0); ctx.lineTo(0,130); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#f06292'; ctx.beginPath(); ctx.moveTo(0,140); ctx.lineTo(80,260); ctx.lineTo(0,280); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#f5a623'; ctx.beginPath(); ctx.moveTo(60,200); ctx.lineTo(160,300); ctx.lineTo(60,340); ctx.closePath(); ctx.fill();
 
-  // Ambient glows
-  const g1=ctx.createRadialGradient(0,0,0,0,0,320);
-  g1.addColorStop(0,'rgba(0,229,212,0.10)');g1.addColorStop(1,'transparent');
-  ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
-  const g2=ctx.createRadialGradient(W,H,0,W,H,320);
-  g2.addColorStop(0,'rgba(91,138,245,0.09)');g2.addColorStop(1,'transparent');
-  ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
-  // Extra glow top-right for warmth
-  const g3=ctx.createRadialGradient(W,0,0,W,0,250);
-  g3.addColorStop(0,'rgba(245,168,58,0.05)');g3.addColorStop(1,'transparent');
-  ctx.fillStyle=g3;ctx.fillRect(0,0,W,H);
+  // Bottom-left
+  ctx.fillStyle='#00bcd4'; ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(160,H); ctx.lineTo(0,H-180); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#f5a623'; ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(90,H); ctx.lineTo(0,H-110); ctx.closePath(); ctx.fill();
 
-  // ── OUTER BORDER (double line)
-  ctx.strokeStyle='rgba(0,229,212,0.40)'; ctx.lineWidth=1.5;
-  ctx.strokeRect(18,18,W-36,H-36);
-  ctx.strokeStyle='rgba(91,138,245,0.18)'; ctx.lineWidth=1;
-  ctx.strokeRect(24,24,W-48,H-48);
+  // Top-right triangles
+  ctx.fillStyle='#f06292'; ctx.beginPath(); ctx.moveTo(W,0); ctx.lineTo(W-160,0); ctx.lineTo(W,160); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#f5a623'; ctx.beginPath(); ctx.moveTo(W,0); ctx.lineTo(W-90,0); ctx.lineTo(W,100); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#00bcd4'; ctx.beginPath(); ctx.moveTo(W-100,0); ctx.lineTo(W-200,120); ctx.lineTo(W-160,0); ctx.closePath(); ctx.fill();
 
-  // ── CORNER ORNAMENTS — 4-pointed stars
-  function drawStar(cx,cy,r,pts,col){
-    ctx.save();ctx.strokeStyle=col;ctx.lineWidth=1;
-    ctx.beginPath();
-    for(let i=0;i<pts*2;i++){
-      const angle=(i*Math.PI/pts)-Math.PI/2;
-      const radius=i%2===0?r:r*0.4;
-      i===0?ctx.moveTo(cx+radius*Math.cos(angle),cy+radius*Math.sin(angle))
-           :ctx.lineTo(cx+radius*Math.cos(angle),cy+radius*Math.sin(angle));
-    }
-    ctx.closePath();ctx.stroke();ctx.restore();
-  }
-  [[30,30],[W-30,30],[30,H-30],[W-30,H-30]].forEach(([x,y])=>drawStar(x,y,9,4,'rgba(0,229,212,0.7)'));
+  // Bottom-right
+  ctx.fillStyle='#f5a623'; ctx.beginPath(); ctx.moveTo(W,H); ctx.lineTo(W-200,H); ctx.lineTo(W,H-200); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#f06292'; ctx.beginPath(); ctx.moveTo(W,H); ctx.lineTo(W-110,H); ctx.lineTo(W,H-120); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#00bcd4'; ctx.beginPath(); ctx.moveTo(W-130,H); ctx.lineTo(W-260,H-80); ctx.lineTo(W-200,H); ctx.closePath(); ctx.fill();
 
-  // ── HORIZONTAL DIVIDER LINES (decorative)
-  function hLine(y,col,w2=260){
-    const grad=ctx.createLinearGradient(W/2-w2,y,W/2+w2,y);
-    grad.addColorStop(0,'transparent');grad.addColorStop(0.3,col);grad.addColorStop(0.7,col);grad.addColorStop(1,'transparent');
-    ctx.strokeStyle=grad;ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(W/2-w2,y);ctx.lineTo(W/2+w2,y);ctx.stroke();
-  }
-
-  // ── INSTITUTION LOGO AREA (top)
-  // Hex icon with glow
-  ctx.shadowColor='rgba(0,229,212,0.5)';ctx.shadowBlur=16;
-  ctx.font='bold 28px monospace';ctx.fillStyle='#00e5d4';ctx.textAlign='center';
-  ctx.fillText('⬡',W/2,72);
-  ctx.shadowBlur=0;
-
-  // Institution name
-  ctx.font='600 11px monospace';ctx.fillStyle='rgba(0,229,212,0.75)';ctx.letterSpacing='4px';
-  ctx.fillText('GRAPHIC ERA DEEMED TO BE UNIVERSITY',W/2,94);
-  ctx.font='10px monospace';ctx.fillStyle='rgba(136,150,184,0.55)';ctx.letterSpacing='1px';
-  ctx.fillText('Dehradun, Uttarakhand, India  ·  Department of Computer Science',W/2,110);
-
-  hLine(122,'rgba(0,229,212,0.25)',300);
+  // ── UNIVERSITY LOGO AREA (top right)
+  ctx.fillStyle='#1a237e'; ctx.font='bold 18px sans-serif'; ctx.textAlign='right';
+  ctx.fillText('Graphic Era',W-20,36);
+  ctx.font='italic 12px sans-serif'; ctx.fillStyle='#1a237e';
+  ctx.fillText('Deemed to be',W-20,52);
+  ctx.font='bold 22px sans-serif'; ctx.fillStyle='#1a237e';
+  ctx.fillText('University',W-20,74);
+  ctx.font='11px sans-serif'; ctx.fillStyle='#666';
+  ctx.fillText('I N D I A',W-20,90);
+  // Circle seal
+  ctx.strokeStyle='#1a237e'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(W-110,58,36,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(W-110,58,30,0,Math.PI*2); ctx.stroke();
+  ctx.font='bold 10px monospace'; ctx.fillStyle='#1a237e'; ctx.textAlign='center';
+  ctx.fillText('GRAPHIC',W-110,50); ctx.fillText('ERA',W-110,63); ctx.fillText('UNIVERSITY',W-110,76);
 
   // ── CERTIFICATE TITLE
-  ctx.font='bold 12px monospace';ctx.fillStyle='rgba(0,229,212,0.65)';ctx.letterSpacing='3px';
-  ctx.fillText('CERTIFICATE OF COMPLETION',W/2,146);
+  ctx.textAlign='center';
+  ctx.font='bold 64px Georgia,serif'; ctx.fillStyle='#1a1a2e';
+  ctx.fillText('CERTIFICATE',W/2,130);
+  ctx.font='24px Georgia,serif'; ctx.fillStyle='#444';
+  ctx.fillText('Claude Connector Classroom — Course Completion',W/2,165);
 
-  // ── COURSE NAME
-  ctx.font='bold 22px Georgia,serif';ctx.fillStyle='#eef0f8';ctx.letterSpacing='0px';
-  ctx.fillText('Claude Connector Classroom',W/2,176);
-  ctx.font='italic 12px Georgia,serif';ctx.fillStyle='rgba(136,150,184,0.7)';
-  ctx.fillText('Artificial Intelligence · Connectors · Prompt Engineering',W/2,196);
+  // ── DIVIDER LINE
+  const grad=ctx.createLinearGradient(160,0,W-160,0);
+  grad.addColorStop(0,'transparent'); grad.addColorStop(0.2,'#f5a623');
+  grad.addColorStop(0.8,'#f5a623'); grad.addColorStop(1,'transparent');
+  ctx.strokeStyle=grad; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(160,180); ctx.lineTo(W-160,180); ctx.stroke();
 
-  hLine(210,'rgba(91,138,245,0.18)',240);
+  // ── PRESENTED TO
+  ctx.font='16px Georgia,serif'; ctx.fillStyle='#666'; ctx.textAlign='center';
+  ctx.fillText('This certificate is proudly presented to :',W/2,218);
 
-  // ── AWARDED TO
-  ctx.font='italic 13px Georgia,serif';ctx.fillStyle='rgba(136,150,184,0.75)';
-  ctx.fillText('This certificate is proudly awarded to',W/2,234);
+  // ── STUDENT NAME (cursive style)
+  ctx.save();
+  ctx.font='italic bold 52px Georgia,serif'; ctx.fillStyle='#1a1a2e';
+  ctx.textAlign='center';
+  // Shadow for depth
+  ctx.shadowColor='rgba(0,0,0,0.1)'; ctx.shadowBlur=4; ctx.shadowOffsetY=2;
+  ctx.fillText(u.name||'Student Name',W/2,282);
+  ctx.restore();
 
-  // Student name — large, elegant
-  ctx.shadowColor='rgba(0,229,212,0.3)';ctx.shadowBlur=8;
-  ctx.font='bold 34px Georgia,serif';ctx.fillStyle='#ffffff';
-  ctx.fillText(currentUser?.name||'Student',W/2,276);
-  ctx.shadowBlur=0;
+  // ── DOTTED LINE under name
+  ctx.setLineDash([3,3]); ctx.strokeStyle='#aaa'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(200,296); ctx.lineTo(W-200,296); ctx.stroke();
+  ctx.setLineDash([]);
 
-  // Underline student name
-  const nw=ctx.measureText(currentUser?.name||'Student').width+40;
-  const grad2=ctx.createLinearGradient(W/2-nw/2,0,W/2+nw/2,0);
-  grad2.addColorStop(0,'transparent');grad2.addColorStop(0.2,'rgba(0,229,212,0.5)');
-  grad2.addColorStop(0.8,'rgba(0,229,212,0.5)');grad2.addColorStop(1,'transparent');
-  ctx.strokeStyle=grad2;ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(W/2-nw/2,284);ctx.lineTo(W/2+nw/2,284);ctx.stroke();
+  // ── BODY TEXT
+  ctx.font='14px Georgia,serif'; ctx.fillStyle='#333'; ctx.textAlign='center';
+  const bodyLine1=`for successfully completing the Claude Connector Classroom at ${u.college||'their institution'},`;
+  const bodyLine2=`under the supervision of Dr. Ankit Vishnoi. The course focused on mastering AI tools,`;
+  const bodyLine3=`connectors, and practical applications of Claude for Computer Science.`;
+  ctx.fillText(bodyLine1,W/2,326);
+  ctx.fillText(bodyLine2,W/2,346);
+  ctx.fillText(bodyLine3,W/2,366);
 
-  // Achievement text
-  ctx.font='13px Georgia,serif';ctx.fillStyle='rgba(136,150,184,0.8)';
-  ctx.fillText('for successfully completing all modules and achieving',W/2,308);
-  ctx.font='bold 14px Georgia,serif';ctx.fillStyle='#eef0f8';
-  ctx.fillText(`${S.labsDone.size} Connector Labs  ·  ${S.quizCorrect} Quiz Points  ·  ${S.xp} XP Earned`,W/2,330);
-
-  hLine(346,'rgba(0,229,212,0.15)',280);
-
-  // ── STATS BOXES
-  const statsY=378;
-  const stats=[['Labs','Completed',S.labsDone.size,'rgba(0,229,212,0.9)'],['Quiz','Score',`${S.quizCorrect}/${S.quizTotal}`,'rgba(91,138,245,0.9)'],['XP','Earned',S.xp,'rgba(245,168,58,0.9)'],['Rank','',(S.xp<50?'Beginner':S.xp<150?'Explorer':S.xp<300?'Practitioner':S.xp<450?'Expert':'Master'),'rgba(61,214,140,0.9)']];
-  const bw=130,bh=52,gap=10,totalW=stats.length*(bw+gap)-gap;
-  stats.forEach(([label,sub,val,col],i)=>{
-    const bx=W/2-totalW/2+i*(bw+gap);
-    const by=statsY-bh/2;
-    ctx.fillStyle='rgba(20,26,48,0.95)';
-    ctx.beginPath();ctx.roundRect(bx,by,bw,bh,8);ctx.fill();
-    ctx.strokeStyle=col.replace('0.9','0.3');ctx.lineWidth=1;ctx.stroke();
-    ctx.font='bold 18px monospace';ctx.fillStyle=col;ctx.textAlign='center';
-    ctx.fillText(String(val),bx+bw/2,statsY+5);
-    ctx.font='9px monospace';ctx.fillStyle='rgba(136,150,184,0.65)';
-    ctx.fillText((label+(sub?' · '+sub:'')).toUpperCase(),bx+bw/2,statsY+20);
+  // ── STUDENT DETAILS ROW
+  const detY=400;
+  ctx.font='bold 12px sans-serif'; ctx.fillStyle='#555'; ctx.textAlign='center';
+  const details=[
+    ['Enrollment No.',u.enrollment_no||'—'],
+    ['Roll No.',u.roll_no||'—'],
+    ['Course',`${u.course||'—'} — ${u.branch||'—'}`],
+    ['Semester',u.semester||'—'],
+  ];
+  const dw=180;
+  details.forEach(([label,val],i)=>{
+    const x=W/2+(i-1.5)*dw+dw/2;
+    ctx.font='10px monospace'; ctx.fillStyle='#888'; ctx.textAlign='center';
+    ctx.fillText(label.toUpperCase(),x,detY);
+    ctx.font='bold 13px sans-serif'; ctx.fillStyle='#1a1a2e';
+    ctx.fillText(val,x,detY+16);
   });
 
-  // ── DIVIDER before signature
-  hLine(416,'rgba(91,138,245,0.15)',300);
+  // ── HORIZONTAL LINE before signatures
+  ctx.strokeStyle='#ddd'; ctx.lineWidth=1; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(160,430); ctx.lineTo(W-160,430); ctx.stroke();
 
-  // ── SIGNATURE SECTION — two columns
-  // LEFT: Instructor signature
-  const sigLX=W/2-170, sigRX=W/2+170;
-  const sigBaseY=468;
+  // ── SIGNATURE SECTION
+  const sigY=520;
+  const leftX=W/2-200, rightX=W/2+200;
 
-  // Left signature — Dr. Ankit Vishnoi (handwritten-style using canvas curves)
+  // LEFT SIGNATURE — Dr. Ankit Vishnoi
   ctx.save();
-  ctx.strokeStyle='rgba(0,229,212,0.85)';ctx.lineWidth=1.8;ctx.lineCap='round';ctx.lineJoin='round';
-  // Draw a stylised cursive "Ankit Vishnoi" signature
-  // Letter A
-  ctx.beginPath();ctx.moveTo(sigLX-68,sigBaseY-2);ctx.bezierCurveTo(sigLX-62,sigBaseY-22,sigLX-52,sigBaseY-24,sigLX-48,sigBaseY-2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(sigLX-66,sigBaseY-12);ctx.lineTo(sigLX-50,sigBaseY-12);ctx.stroke();
-  // n
-  ctx.beginPath();ctx.moveTo(sigLX-44,sigBaseY-2);ctx.lineTo(sigLX-44,sigBaseY-14);ctx.bezierCurveTo(sigLX-44,sigBaseY-20,sigLX-32,sigBaseY-20,sigLX-32,sigBaseY-14);ctx.lineTo(sigLX-32,sigBaseY-2);ctx.stroke();
-  // k
-  ctx.beginPath();ctx.moveTo(sigLX-26,sigBaseY-2);ctx.lineTo(sigLX-26,sigBaseY-18);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(sigLX-26,sigBaseY-12);ctx.lineTo(sigLX-18,sigBaseY-18);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(sigLX-24,sigBaseY-10);ctx.lineTo(sigLX-18,sigBaseY-2);ctx.stroke();
-  // i
-  ctx.beginPath();ctx.moveTo(sigLX-13,sigBaseY-14);ctx.lineTo(sigLX-13,sigBaseY-2);ctx.stroke();
-  ctx.beginPath();ctx.arc(sigLX-13,sigBaseY-18,1.5,0,Math.PI*2);ctx.fillStyle='rgba(0,229,212,0.85)';ctx.fill();
-  // t
-  ctx.beginPath();ctx.moveTo(sigLX-7,sigBaseY-2);ctx.lineTo(sigLX-7,sigBaseY-20);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(sigLX-12,sigBaseY-14);ctx.lineTo(sigLX-2,sigBaseY-14);ctx.stroke();
-  // flowing connecting stroke + V of Vishnoi
-  ctx.beginPath();ctx.moveTo(sigLX-2,sigBaseY-2);ctx.bezierCurveTo(sigLX+4,sigBaseY-2,sigLX+8,sigBaseY-16,sigLX+14,sigBaseY-22);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(sigLX+14,sigBaseY-22);ctx.bezierCurveTo(sigLX+20,sigBaseY-10,sigLX+26,sigBaseY-4,sigLX+30,sigBaseY-18);ctx.stroke();
-  // ishnoi
-  ctx.beginPath();ctx.moveTo(sigLX+30,sigBaseY-18);ctx.bezierCurveTo(sigLX+34,sigBaseY-6,sigLX+38,sigBaseY-20,sigLX+46,sigBaseY-14);ctx.lineTo(sigLX+46,sigBaseY-2);ctx.stroke();
-  ctx.beginPath();ctx.arc(sigLX+35,sigBaseY-24,1.5,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.moveTo(sigLX+50,sigBaseY-14);ctx.lineTo(sigLX+50,sigBaseY-2);ctx.stroke();
-  ctx.beginPath();ctx.arc(sigLX+50,sigBaseY-18,1.5,0,Math.PI*2);ctx.fill();
-  // final flowing underline flourish
-  ctx.beginPath();ctx.moveTo(sigLX-68,sigBaseY+2);ctx.bezierCurveTo(sigLX-20,sigBaseY+8,sigLX+20,sigBaseY+6,sigLX+60,sigBaseY);ctx.stroke();
+  ctx.strokeStyle='#1a1a2e'; ctx.lineWidth=1.6; ctx.lineCap='round'; ctx.lineJoin='round';
+  // Stylised Vishnoi signature
+  const sx=leftX, sy=sigY;
+  ctx.beginPath(); ctx.moveTo(sx-65,sy-2); ctx.bezierCurveTo(sx-58,sy-22,sx-48,sy-24,sx-44,sy-2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx-63,sy-12); ctx.lineTo(sx-46,sy-12); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx-40,sy-2); ctx.lineTo(sx-40,sy-15); ctx.bezierCurveTo(sx-40,sy-21,sx-28,sy-21,sx-28,sy-15); ctx.lineTo(sx-28,sy-2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx-22,sy-2); ctx.lineTo(sx-22,sy-18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx-22,sy-13); ctx.lineTo(sx-14,sy-18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx-20,sy-10); ctx.lineTo(sx-14,sy-2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx-9,sy-15); ctx.lineTo(sx-9,sy-2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(sx-9,sy-19,1.5,0,Math.PI*2); ctx.fillStyle='#1a1a2e'; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(sx-3,sy-2); ctx.lineTo(sx-3,sy-20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx-8,sy-14); ctx.lineTo(sx+2,sy-14); ctx.stroke();
+  // V of Vishnoi
+  ctx.beginPath(); ctx.moveTo(sx+4,sy-2); ctx.bezierCurveTo(sx+8,sy-2,sx+14,sy-18,sx+20,sy-22); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx+20,sy-22); ctx.bezierCurveTo(sx+26,sy-10,sx+32,sy-4,sx+36,sy-18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx+36,sy-18); ctx.bezierCurveTo(sx+40,sy-6,sx+44,sy-20,sx+52,sy-14); ctx.lineTo(sx+52,sy-2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(sx+37,sy-24,1.5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(sx+56,sy-14); ctx.lineTo(sx+56,sy-2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(sx+56,sy-18,1.5,0,Math.PI*2); ctx.fill();
+  // Underline flourish
+  ctx.beginPath(); ctx.moveTo(sx-65,sy+3); ctx.bezierCurveTo(sx-20,sy+9,sx+20,sy+7,sx+65,sy+2); ctx.stroke();
   ctx.restore();
 
-  // Signature line left
-  ctx.strokeStyle='rgba(136,150,184,0.25)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(sigLX-80,sigBaseY+10);ctx.lineTo(sigLX+80,sigBaseY+10);ctx.stroke();
+  // LEFT signature line & label
+  ctx.strokeStyle='#999'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(leftX-80,sigY+14); ctx.lineTo(leftX+80,sigY+14); ctx.stroke();
+  ctx.font='bold 13px Georgia,serif'; ctx.fillStyle='#1a1a2e'; ctx.textAlign='center';
+  ctx.fillText('Dr. Ankit Vishnoi (Assoc. Prof.)',leftX,sigY+30);
+  ctx.font='11px sans-serif'; ctx.fillStyle='#555';
+  ctx.fillText('Course Instructor & Internship Co-ordinator',leftX,sigY+46);
+  ctx.fillText('Dept. of Computer Science, GEU',leftX,sigY+60);
 
-  ctx.font='bold 12px Georgia,serif';ctx.fillStyle='#eef0f8';ctx.textAlign='center';
-  ctx.fillText('Dr. Ankit Vishnoi',sigLX,sigBaseY+26);
-  ctx.font='10px monospace';ctx.fillStyle='rgba(136,150,184,0.65)';
-  ctx.fillText('Associate Professor & Course Instructor',sigLX,sigBaseY+40);
-  ctx.fillText('Dept. of Computer Science',sigLX,sigBaseY+52);
-  ctx.fillText('Graphic Era Deemed to be University',sigLX,sigBaseY+64);
-
-  // RIGHT: Institute seal / date column
-  // Decorative seal ring
+  // RIGHT SIGNATURE — Prof. (Dr.) Devesh Pratap Singh (oval/circular style)
   ctx.save();
-  ctx.strokeStyle='rgba(245,168,58,0.35)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(sigRX,sigBaseY+8,36,0,Math.PI*2);ctx.stroke();
-  ctx.strokeStyle='rgba(245,168,58,0.18)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(sigRX,sigBaseY+8,30,0,Math.PI*2);ctx.stroke();
-  // Inner text
-  ctx.font='bold 18px monospace';ctx.fillStyle='rgba(245,168,58,0.85)';ctx.textAlign='center';
-  ctx.fillText('⬡',sigRX,sigBaseY+4);
-  ctx.font='bold 8px monospace';ctx.fillStyle='rgba(245,168,58,0.65)';ctx.letterSpacing='1px';
-  ctx.fillText('VERIFIED',sigRX,sigBaseY+20);
+  ctx.strokeStyle='#1a1a2e'; ctx.lineWidth=1.4; ctx.lineCap='round';
+  const rx=rightX, ry=sigY;
+  // Circular signature style (matching the PDF)
+  ctx.beginPath(); ctx.ellipse(rx,ry-10,28,18,0,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(rx-20,ry+2); ctx.bezierCurveTo(rx-10,ry-6,rx+10,ry-6,rx+20,ry+2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(rx-15,ry-20); ctx.lineTo(rx+15,ry); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(rx,ry-28); ctx.lineTo(rx+5,ry+8); ctx.stroke();
+  // Underline
+  ctx.beginPath(); ctx.moveTo(rx-50,ry+10); ctx.bezierCurveTo(rx-20,ry+16,rx+20,ry+14,rx+50,ry+10); ctx.stroke();
   ctx.restore();
 
-  // Date & cert ID below seal
-  const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  const certId='CCC-'+Date.now().toString(36).toUpperCase().slice(-8);
-  ctx.font='10px monospace';ctx.fillStyle='rgba(136,150,184,0.65)';ctx.textAlign='center';ctx.letterSpacing='0px';
-  ctx.fillText('Date of Issue',sigRX,sigBaseY+52);
-  ctx.font='bold 11px monospace';ctx.fillStyle='rgba(136,150,184,0.85)';
-  ctx.fillText(date,sigRX,sigBaseY+65);
-  ctx.font='9px monospace';ctx.fillStyle='rgba(74,85,120,0.6)';
-  ctx.fillText('Cert ID: '+certId,sigRX,sigBaseY+78);
+  ctx.strokeStyle='#999'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(rightX-80,sigY+14); ctx.lineTo(rightX+80,sigY+14); ctx.stroke();
+  ctx.font='bold 13px Georgia,serif'; ctx.fillStyle='#1a1a2e'; ctx.textAlign='center';
+  ctx.fillText('Prof. (Dr.) Devesh Pratap Singh',rightX,sigY+30);
+  ctx.font='11px sans-serif'; ctx.fillStyle='#555';
+  ctx.fillText('Head of Department, Computer Science',rightX,sigY+46);
+  ctx.fillText('Graphic Era Deemed to be University',rightX,sigY+60);
 
-  // ── FOOTER
-  ctx.font='10px monospace';ctx.fillStyle='rgba(44,52,80,0.9)';ctx.textAlign='center';ctx.letterSpacing='0.5px';
-  ctx.fillText('claude.ai  ·  Claude Connector Classroom  ·  Powered by Anthropic',W/2,H-18);
+  // ── DATE AND CERT ID
+  const date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const certId='GEU-CCL-'+Date.now().toString(36).toUpperCase().slice(-8);
+  ctx.font='11px monospace'; ctx.fillStyle='#888'; ctx.textAlign='center';
+  ctx.fillText(`Date of Issue: ${date}   ·   Certificate ID: ${certId}   ·   claude.ai`,W/2,H-12);
 }
-
 function downloadCert(){
   drawCert();
   const canvas=document.getElementById('certCanvas');
